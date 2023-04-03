@@ -1,0 +1,230 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>C++ | Odrin's blog</title><meta name="author" content="Odrin He"><meta name="copyright" content="Odrin He"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="1.0 IntroductionC++学习过程的记录，主要参考资料包括： 1.1 使用CMake管理VSCode C++工程文件 其实这样并不比其他IDE方便,只是了解下CMake :joy:   不同的IDE所集成的make工具所遵循的规范和标准都不同，也就导致其语法、格式不同，也就不能很好的跨平台编译，会再次使得工作繁琐起来，那么cmake为了解决这个问题而诞生了，其允许开发者指定整个工程的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++">
+<meta property="og:url" content="https://odrin2.github.io/C++/index.html">
+<meta property="og:site_name" content="Odrin&#39;s blog">
+<meta property="og:description" content="1.0 IntroductionC++学习过程的记录，主要参考资料包括： 1.1 使用CMake管理VSCode C++工程文件 其实这样并不比其他IDE方便,只是了解下CMake :joy:   不同的IDE所集成的make工具所遵循的规范和标准都不同，也就导致其语法、格式不同，也就不能很好的跨平台编译，会再次使得工作繁琐起来，那么cmake为了解决这个问题而诞生了，其允许开发者指定整个工程的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://odrin2.github.io/img/hutao.jpg">
+<meta property="article:published_time" content="2023-03-11T06:22:46.000Z">
+<meta property="article:modified_time" content="2023-04-03T07:48:47.989Z">
+<meta property="article:author" content="Odrin He">
+<meta property="article:tag" content="Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://odrin2.github.io/img/hutao.jpg"><link rel="shortcut icon" href="/img/station.png"><link rel="canonical" href="https://odrin2.github.io/C++/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'C++',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-03 15:48:47'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/hutao.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Odrin's blog"><span class="site-name">Odrin's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">C++</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-11T06:22:46.000Z" title="发表于 2023-03-11 14:22:46">2023-03-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-03T07:48:47.989Z" title="更新于 2023-04-03 15:48:47">2023-04-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/CS/">CS</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="C++"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="post-content" id="article-container"><hr>
+<h3 id="1-0-Introduction"><a href="#1-0-Introduction" class="headerlink" title="1.0 Introduction"></a>1.0 Introduction</h3><p>C++学习过程的记录，主要参考资料包括：</p>
+<h3 id="1-1-使用CMake管理VSCode-C-工程文件"><a href="#1-1-使用CMake管理VSCode-C-工程文件" class="headerlink" title="1.1 使用CMake管理VSCode C++工程文件"></a>1.1 使用CMake管理VSCode C++工程文件</h3><blockquote>
+<p>其实这样并不比其他IDE方便,只是了解下CMake :joy:</p>
+</blockquote>
+<blockquote>
+<p>不同的IDE所集成的make工具所遵循的规范和标准都不同，也就导致其语法、格式不同，也就不能很好的跨平台编译，会再次使得工作繁琐起来，那么cmake为了解决这个问题而诞生了，其允许开发者指定整个工程的编译流程，在根据编译平台，生成本地化的Makefile和工程文件，最后用户只需make编译即可。</p>
+</blockquote>
+<h4 id="1-1-1-使用过程"><a href="#1-1-1-使用过程" class="headerlink" title="1.1.1 使用过程"></a>1.1.1 使用过程</h4><p>针对已有的源代码可以编写<code>CMakeLists.txt</code>文件，此文件会被CMake工具解析生成相应的<code>CMakeFiles</code> <code>CMakeCaches.txt</code> <code>cmake_install.cmake</code>等等配置文件。</p>
+<blockquote>
+<p>当然也可以在写代码之前直接使用VSCode中CMake的<code>Quark Stark</code>快速配置，会创建<code>build</code>目录并生成以上文件。</p>
+</blockquote>
+<ul>
+<li>省略了camke的配置过程</li>
+<li>使用cmake命令解析(更新)构建系统，过程中会生成以上文件<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake ./</span><br></pre></td></tr></table></figure></li>
+<li>执行make命令编译项目<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make</span><br></pre></td></tr></table></figure></li>
+<li>如果有更多需求可以更改<code>CMakeLists.txt</code>中的配置函数，比如下方所示需要配置多个源文件<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">CMake 最低版本号要求</span></span><br><span class="line">cmake_minimum_required (VERSION 2.8)</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">项目信息</span></span><br><span class="line">project (Demo2)</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查找当前目录下的所有源文件</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">并将名称保存到 DIR_SRCS 变量</span></span><br><span class="line">aux_source_directory(. DIR_SRCS)</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">指定生成目标</span></span><br><span class="line">add_executable(Demo $&#123;DIR_SRCS&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="1-1-2常用的CMake命令："><a href="#1-1-2常用的CMake命令：" class="headerlink" title="1.1.2常用的CMake命令："></a>1.1.2常用的CMake命令：</h4>Generate a Project Buildsystem<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cmake [&lt;options&gt;] &lt;path-to-source&gt;</span><br><span class="line">cmake [&lt;options&gt;] &lt;path-to-existing-build&gt;</span><br><span class="line">cmake [&lt;options&gt;] -S &lt;path-to-source&gt; -B &lt;path-to-build&gt;</span><br></pre></td></tr></table></figure>
+Build a Project<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake --build &lt;dir&gt; [&lt;options&gt;] [--&lt;build-tool-options&gt;]</span><br></pre></td></tr></table></figure>
+Install a Project<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake --install &lt;dir&gt; [&lt;options&gt;]</span><br></pre></td></tr></table></figure>
+Open a Project<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake --open &lt;dir&gt;</span><br></pre></td></tr></table></figure>
+Run a Script<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake [&#123;-D &lt;var&gt;=&lt;value&gt;&#125;...] -P &lt;cmake-script-file&gt;</span><br></pre></td></tr></table></figure>
+Run a Command-Line Tool<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake -E &lt;command&gt; [&lt;options&gt;]</span><br></pre></td></tr></table></figure>
+Run the Find-Package Tool<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake --find-package [&lt;options&gt;]</span><br></pre></td></tr></table></figure>
+View <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake --help[-&lt;topic&gt;]</span><br></pre></td></tr></table></figure>
+<h3 id="1-2-C-是如何工作的"><a href="#1-2-C-是如何工作的" class="headerlink" title="1.2 C++是如何工作的"></a>1.2 C++是如何工作的</h3><h4 id="1-2-1-一段C-代码示例"><a href="#1-2-1-一段C-代码示例" class="headerlink" title="1.2.1 一段C++代码示例"></a>1.2.1 一段C++代码示例</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span>   <span class="comment">//预处理发生在编译之前</span></span></span><br><span class="line"><span class="comment">//include的作用是找到名为&lt;iostream&gt;的文件，将其拷贝过来，称为头文件</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span>  <span class="comment">//程序入口</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;hello world!&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    std::cin.<span class="built_in">get</span>();</span><br><span class="line">    <span class="comment">//main函数可以不写返回值，默认返回0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="1-2-2-怎么从C-源代码转换成二进制文件（机器码）？"><a href="#1-2-2-怎么从C-源代码转换成二进制文件（机器码）？" class="headerlink" title="1.2.2 怎么从C++源代码转换成二进制文件（机器码）？"></a>1.2.2 怎么从C++源代码转换成二进制文件（机器码）？</h4>简单的说就是编译、连接、执行三步：</li>
+<li><strong>step1</strong>: 将iostream文件中的内容拷贝到代码文件中</li>
+<li><strong>step2</strong>: 编译器将.cpp文件编译为object file(.obj)</li>
+<li><strong>step3</strong>: 链接(link)将所有obj文件粘合到一起生成.exe文件<blockquote>
+<p>注：link的作用简单的说就是帮助在多文件项目中寻找函数</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="1-3-编译器是如何工作的"><a href="#1-3-编译器是如何工作的" class="headerlink" title="1.3 编译器是如何工作的"></a>1.3 编译器是如何工作的</h3><p>对于C++编译器来说没有文件的概念<br>一个翻译单元不一定等于一个C++文件</p>
+<p>编译的第一阶段：预处理阶段，编译之前的过程<br>编译器遍历预处理语句，粘贴头文件代码<br>一个例子:编译器会在预处理时会把头文件EndBrace.h的内容复制到Math.cpp</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//文件Math.cpp</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">Mutiply</span><span class="params">(<span class="type">int</span> a , <span class="type">int</span> b )</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> result = a*b;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;EndBrace.h&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//文件EndBrace.h</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译器的模式和速度是可以调节的，编译器在编译的过程中会生成额外的部分帮助你debug，返回更多的错误信息。有些时候设置编译器debug状态下的最大化速度，会自动帮你优化代码。</p>
+<h3 id="1-4-连接器是如何工作的"><a href="#1-4-连接器是如何工作的" class="headerlink" title="1.4 连接器是如何工作的"></a>1.4 连接器是如何工作的</h3><p>build一个项目是编译+连接的过程<br>编译过程的错误是C开头，如C2143拼写错误<br>连接过程的错误是LNK开头，如LNK561缺少主函数</p>
+<p>linker帮助我们寻找相同类型、函数名、变量、返回参数的函数，找不到就会报错<br>linker如果在多个文件中找到同名函数，同样会报错<br>常见错误：由于头文件的复制，导致出现linker发现同名函数<br>解决：头文件中的函数可以声明为staic函数以确保这个函数链接时只发生在内部</p>
+<h3 id="1-5-C-头文件"><a href="#1-5-C-头文件" class="headerlink" title="1.5 C++头文件"></a>1.5 C++头文件</h3><p>头文件中的<code>#pragma once</code>是一个预处理指令，它通常用于防止头文件被重复包含。</p>
+<p>在C++中，头文件通常用于存放函数、类、变量和常量等声明，以便在多个源文件中共享它们。当源文件包含一个头文件时，编译器将包含的头文件内容复制并插入到源文件中，以便在编译时处理。如果多个源文件都包含了相同的头文件，则会导致重复定义，这将导致编译器出现错误。</p>
+<p>&lt;&gt;或””来指定包含的文件的位置。<br>&lt;&gt;用于包含系统或编译器提供的头文件，编译器将从标准的系统路径中搜索该文件。<br>例如，以下是包含标准输入输出库的头文件<iostream>的示例：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="comment">//请注意iostream文件没有扩展名，这是C++标准库的设计</span></span><br></pre></td></tr></table></figure>
+<p>“”用于包含用户自定义的头文件，编译器将从当前源文件所在的目录开始搜索该文件。</p>
+<p>例如，以下是包含自定义头文件myheader.h的示例：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;myheader.h&quot;</span></span></span><br></pre></td></tr></table></figure>
+<p>如果在当前源文件所在的目录中找不到所需的头文件，则编译器将从指定的系统路径中搜索它。</p>
+<p>通常，使用&lt;&gt;来包含系统头文件，而使用””来包含自定义头文件，以避免头文件重名的问题。</p>
+<p>需要注意的是，在实践中，使用””包含系统头文件和使用&lt;&gt;包含自定义头文件是可能的，但不建议这样做，因为这可能会导致代码可移植性的问题。</p>
+<h3 id="1-6-debug-and-release"><a href="#1-6-debug-and-release" class="headerlink" title="1.6 debug and release"></a>1.6 debug and release</h3><p>debug模式下编译器会做很多额外的事情帮助你调试程序<br>    debug的过程黄色箭头、红点<br>release模式则会更快的帮你生成优化的项目</p>
+<h3 id="1-7-Visual-Studio-Configure"><a href="#1-7-Visual-Studio-Configure" class="headerlink" title="1.7 Visual Studio Configure"></a>1.7 Visual Studio Configure</h3><ul>
+<li>VS创建项目会生成一个<code>项目文件夹</code>和一个<code>解决方案.sln</code>文件（本质是一个目录性质的文本文件），项目文件夹中会有<code>.vcxproj</code>（本质是一个XML文档）。</li>
+<li>VS自己建立的过滤器视图，是一种虚拟的管理视图，并不会真的在文件目录中那样储存，过滤器的虚拟视图和磁盘上的实际的文件目录没关系。</li>
+<li>建议自己点击<code> 解决方案资源管理器</code>-<code>显示所有文件</code>-右键项目文件<code>添加</code>-<code>新建文件夹</code>，自己建立一个名为<code>source</code>或者<code> src</code>用于管理自己创建的源代码文件、头文件等等文件，用以区别项目文件和可能使用的任何其他资源。</li>
+<li>debug模式build项目的过程中，默认会把生成两个名为debug的文件，一个是包含编译过程的中间文件在项目文件夹内，另一个是生成的可执行文件在与项目文件夹并列在根目录中。<br>如果不满意这些设定可以在项目设置中更改：</li>
+</ul>
+<p><strong>Output Directory:</strong><code>$(SolutionDir)bin\$(Platform)\$(Configuration)\</code><br><strong>Intermediate Directory:</strong><code>$(SolutionDir)bin\intermediates\$(Platform)\$(Configuration)\</code><br>将生成文件放在<code>bin</code>文件下，将中间文件放在<code>bin\intermediates</code>文件下<br>并在后面加上平台和配置信息</p>
+<h3 id="1-8-C-变量"><a href="#1-8-C-变量" class="headerlink" title="1.8 C++变量"></a>1.8 C++变量</h3><p>不同变量的唯一区别本质是大小</p>
+<h3 id="1-9-C-函数"><a href="#1-9-C-函数" class="headerlink" title="1.9 C++函数"></a>1.9 C++函数</h3><h3 id="2-0-条件分支、循环、控制流语句"><a href="#2-0-条件分支、循环、控制流语句" class="headerlink" title="2.0 条件分支、循环、控制流语句"></a>2.0 条件分支、循环、控制流语句</h3><p>if语句速度不快，不建议多用<br>for<br>while<br>do while<br>continue<br>break<br>return</p>
+<h3 id="2-1-C-指针"><a href="#2-1-C-指针" class="headerlink" title="2.1 C++指针(*)"></a>2.1 C++指针(*)</h3><p>高端理解(:dog:) :  指针是一个整数，一种储存内存地址的数字。请暂时忘掉哪些所谓的数据类型，不过是以不同字节大小存储的数字，类型只是为了让编程更容易而创造的某种虚构，类型没有意义。</p>
+<p>空指针：void指针是一种通用指针类型，可以指向任何类型的数据</p>
+<h3 id="2-2-C-引用-amp"><a href="#2-2-C-引用-amp" class="headerlink" title="2.2 C++引用(&amp;)"></a>2.2 C++引用(&amp;)</h3><p>高端理解(:dog:) :  引用只是指针的伪装，只是指针的语法糖。</p>
+<p>这段代码定义了一个名为 a 的整型变量，初始化为 5。接下来，又定义了一个名为 ref 的整型引用，并将其绑定到 a 上。</p>
+<p>引用是一个别名，它提供了对变量的另一个名称。在这个例子中，ref 是 a 的引用，因此 ref 和 a 实际上指向同一个整型变量。因此，当我们修改 ref 的值时，实际上是修改了 a 的值，反之亦然。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> a = <span class="number">5</span>;</span><br><span class="line">    <span class="type">int</span>&amp; ref = a;  <span class="comment">//定义一个a的引用</span></span><br><span class="line">   <span class="comment">/*  ref并不是一个真正的变量，本质是一个(*指针常量)，</span></span><br><span class="line"><span class="comment">   意义上等价于*(int* const ref),编译后只有变量a   */</span></span><br><span class="line">    ref = <span class="number">2</span>;  <span class="comment">//实际的效果相当于给变量a起了个别名叫ref</span></span><br><span class="line">    std::cout&gt;&gt;a&gt;&gt;std::endl;</span><br><span class="line">    std::cin.<span class="built_in">get</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2</span></span><br></pre></td></tr></table></figure>
+<p>通过引用，我们可以避免在代码中频繁地使用指针或副本，从而提高代码的可读性和效率。在C++中，引用是一种非常有用的特性，可以用于传递函数参数、返回值和对变量的别名操作等场景。<br>提升效率的例子：传递函数参数时，可以使用引用作为函数参数，将实参的别名传递给函数，以避免函数内部复制参数的开销。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">swap</span><span class="params">(<span class="type">int</span>&amp; x, <span class="type">int</span>&amp; y)</span> </span>&#123;</span><br><span class="line">  <span class="type">int</span> temp = x;</span><br><span class="line">  x = y;</span><br><span class="line">  y = temp;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> a = <span class="number">5</span>, b = <span class="number">10</span>;</span><br><span class="line"><span class="built_in">swap</span>(a, b); <span class="comment">// a = 10, b = 5</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-C-类"><a href="#2-3-C-类" class="headerlink" title="2.3 C++类"></a>2.3 C++类</h3></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://odrin2.github.io/">Odrin He</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://odrin2.github.io/C++/">https://odrin2.github.io/C++/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://odrin2.github.io" target="_blank">Odrin's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Learning/">Learning</a></div><div class="post_share"><div class="social-share" data-image="/img/hutao.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/Computer%20Organization/" title="Computer Organization"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Computer Organization</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/Computer%20Organization/" title="Computer Organization"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-15</div><div class="title">Computer Organization</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/hutao.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Odrin He</div><div class="author-info__description">?</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Odrin2"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Odrin2" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:heyu10202@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Are you OK?</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-0-Introduction"><span class="toc-number">1.</span> <span class="toc-text">1.0 Introduction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%BD%BF%E7%94%A8CMake%E7%AE%A1%E7%90%86VSCode-C-%E5%B7%A5%E7%A8%8B%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">1.1 使用CMake管理VSCode C++工程文件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-1-%E4%BD%BF%E7%94%A8%E8%BF%87%E7%A8%8B"><span class="toc-number">2.1.</span> <span class="toc-text">1.1.1 使用过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-2%E5%B8%B8%E7%94%A8%E7%9A%84CMake%E5%91%BD%E4%BB%A4%EF%BC%9A"><span class="toc-number">2.2.</span> <span class="toc-text">1.1.2常用的CMake命令：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-C-%E6%98%AF%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="toc-number">3.</span> <span class="toc-text">1.2 C++是如何工作的</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-1-%E4%B8%80%E6%AE%B5C-%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="toc-number">3.1.</span> <span class="toc-text">1.2.1 一段C++代码示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2-%E6%80%8E%E4%B9%88%E4%BB%8EC-%E6%BA%90%E4%BB%A3%E7%A0%81%E8%BD%AC%E6%8D%A2%E6%88%90%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6%EF%BC%88%E6%9C%BA%E5%99%A8%E7%A0%81%EF%BC%89%EF%BC%9F"><span class="toc-number">3.2.</span> <span class="toc-text">1.2.2 怎么从C++源代码转换成二进制文件（机器码）？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E7%BC%96%E8%AF%91%E5%99%A8%E6%98%AF%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="toc-number">4.</span> <span class="toc-text">1.3 编译器是如何工作的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-%E8%BF%9E%E6%8E%A5%E5%99%A8%E6%98%AF%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="toc-number">5.</span> <span class="toc-text">1.4 连接器是如何工作的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-C-%E5%A4%B4%E6%96%87%E4%BB%B6"><span class="toc-number">6.</span> <span class="toc-text">1.5 C++头文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6-debug-and-release"><span class="toc-number">7.</span> <span class="toc-text">1.6 debug and release</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-7-Visual-Studio-Configure"><span class="toc-number">8.</span> <span class="toc-text">1.7 Visual Studio Configure</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-8-C-%E5%8F%98%E9%87%8F"><span class="toc-number">9.</span> <span class="toc-text">1.8 C++变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-9-C-%E5%87%BD%E6%95%B0"><span class="toc-number">10.</span> <span class="toc-text">1.9 C++函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-0-%E6%9D%A1%E4%BB%B6%E5%88%86%E6%94%AF%E3%80%81%E5%BE%AA%E7%8E%AF%E3%80%81%E6%8E%A7%E5%88%B6%E6%B5%81%E8%AF%AD%E5%8F%A5"><span class="toc-number">11.</span> <span class="toc-text">2.0 条件分支、循环、控制流语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-C-%E6%8C%87%E9%92%88"><span class="toc-number">12.</span> <span class="toc-text">2.1 C++指针(*)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-C-%E5%BC%95%E7%94%A8-amp"><span class="toc-number">13.</span> <span class="toc-text">2.2 C++引用(&amp;)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-C-%E7%B1%BB"><span class="toc-number">14.</span> <span class="toc-text">2.3 C++类</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/C++/" title="C++">C++</a><time datetime="2023-03-11T06:22:46.000Z" title="发表于 2023-03-11 14:22:46">2023-03-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Computer%20Organization/" title="Computer Organization">Computer Organization</a><time datetime="2023-01-15T12:32:53.000Z" title="发表于 2023-01-15 20:32:53">2023-01-15</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2023 By Odrin He</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
