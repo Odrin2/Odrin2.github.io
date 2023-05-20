@@ -1392,7 +1392,7 @@ namespace <#name#> = <#namespace#>;
 >Cherno:我认为如果是一个非常严肃的项目，你应该把代码写在```namespace```后面
 
 ### C++ 线程
-
+thread
 ### C++ 计时
 STD chrono库 
 windows OS
