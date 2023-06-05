@@ -1206,8 +1206,6 @@ int main()
     std::cin.get();
 }
 ```
-### C++ 处理多个不同类型的返回
-用结构体
 
 ### C++ templates
 模版的作用，有点类似于元编程meta programming
@@ -1392,12 +1390,495 @@ namespace <#name#> = <#namespace#>;
 >Cherno:我认为如果是一个非常严肃的项目，你应该把代码写在```namespace```后面
 
 ### C++ 线程
-thread
+计算机可以同时执行多个进程和线程，通常一个程序一个进程（也有多个），一个进程包含多个线程，线程与进程的区别是，线程之间的内存是共享的，进程不是。
+```cpp
+#include<iostream>
+#include<thread>
+
+static bool s_finished = false;
+
+void dowork()
+{
+	using namespace std::literals::chrono_literals;
+
+	std::cout << "start thread id is " << std::this_thread::get_id() << std::endl;
+
+	while (!s_finished)
+	{
+		std::cout << "working...0" << std::endl;
+		std::this_thread::sleep_for(1s);
+	}
+}
+
+int main() {
+	std::thread worker(dowork);
+	std::cin.get();
+	s_finished = true;
+
+	worker.join();
+	std::cout << "finished" << std::endl;
+	std::cout << "finished thread id is " << std::this_thread::get_id() << std::endl;
+	std::cin.get();
+}
+```
 ### C++ 计时
+
 STD chrono库 
 windows OS
 记录程序实际运行的时间
 基准测试
+```cpp
+#include<iostream>
+#include<chrono>
+#include<thread>
+struct Timer
+{
+	std::chrono::time_point<std::chrono::steady_clock> start, end;
+	std::chrono::duration<float> duration;
+	Timer() 
+	{
+		start = std::chrono::high_resolution_clock::now();
+	}
+	~Timer()
+	{
+		end = std::chrono::high_resolution_clock::now();
+		duration = end - start;
+
+		float ms = duration.count() * 1000.0f;
+		std::cout << "Timer took " << ms << "ms " << std::endl;
+	}
+};
+void function()
+{
+	Timer timer;
+	for (int i = 0; i < 100; i++)
+	{
+		std::cout << "hello\n";
+	}
+}
+int main()
+{
+	function();
+	std::cin.get();
+}
+```
+### 多维数组
+在处理任何类型的数组时，指针是非常重要的，处理内存的简单方法是使用指针。
+多维数组，比如二维数组，就是数组的数组，三维数组，就是数组的数组的数组。
+并不难理解，没有什么过多要说的，需要注意的是内存泄漏的问题。
+```cpp
+#include<iostream>
+int main()
+{
+    int** a2d = new int*[5];
+    for(int i = 0; i < 5;i++)
+        a2d[i] = new int[5];
+    for(int i = 0; i<5 ;i++)
+        delete[] a2d[i];
+    delete[] a2d;
+
+    std::cin.get();
+}
+```
+此外，二维数组切换维度时有可能出现更多的`cache miss`,因为不同维度的内存空间是由空闲列表分配的，可能并不连续。想要优化速度，可以想办法用一维数组表示二维数组。
+```cpp
+int* array = new int[5*5];
+for (int i = 0; i < 5;i++)
+{
+    for(int j = 0;j < 5;j++)
+    {
+        array[x+y*5] = 2;
+    }
+}
+```
+### C++ 排序
+学习std库
+```cpp
+#include<iostream>
+#include<vector>
+#include<algorithm>
+
+int main()
+{
+    std::vector<int> values = { 3,5,4,1,2 };
+    std::sort(values.begin(), values.end(),std::greater<int>());
+
+    for (int value : values)
+        std::cout << value << std::endl;
+
+    std::cin.get();
+}
+```
+### C++ 类型双关
+类型双关type punning,这只是个花哨的术语，用来在C++中绕过类型系统。
+意思是我要把拥有的这段内存，当作不同类型的内存来对待，需要做的只是将该类型作为指针，然后将其转换为应一个指针。
+```cpp
+#include <iostream>
+int main() {
+	int a = 50;
+	double value = *(double*)&a;
+	std::cout << value << std::endl;
+	std::cin.get();
+}
+```
+在更复杂的代码中，这种处理可以减少“复制”的现象。
+
+### C++ 联合体
+以下也是一种类型双关的表现，
+```cpp
+#include<iostream>
+int main()
+{
+	struct Union
+	{
+		union 
+		{
+			float a;
+			int b;
+		};
+	};
+	Union u;
+	u.a = 2.0f;
+	std::cout << u.a << "," << u.b << std::endl;
+    //取出来的是用int表现的float的指针地址
+}
+//2,1073741824
+```
+联合体使用示例:
+```cpp
+include <iostream>
+
+struct Vector2
+{
+	float x,y;
+};
+
+struct Vector4
+{
+	union
+	{
+		//两个结构体都是union的成员，都是16个字节共享同一内存
+		struct
+		{
+			float x, y, z, w; //以float的类型访问该内存
+		};
+		struct 
+		{
+			Vector2 a, b;   //以Vector2的类型访问该内存
+		};
+	};
+	
+};
+void PrintVector2(const Vector2& vector)
+{
+	std::cout << vector.x << "," << vector.y << std::endl;
+}
+
+int main()
+{
+	Vector4 vector = {1.0f,2.0f,3.0f,4.0f};
+	PrintVector2(vector.a);
+	PrintVector2(vector.b);
+	vector.z = 500.0f;
+	std::cout <<  "----------------------" <<  std::endl;
+	PrintVector2(vector.a);
+	PrintVector2(vector.b);
+}
+/*
+1,2
+3,4
+----------------------
+1,2
+500,4
+*/
+```
+### C++ 虚析构函数
+在下列情境中，出现了内存泄漏问题,原因是在一个多态使用中没有销毁子类中开辟的内存。
+如果利用多态时，用基类指针来引用派生类对象，那么基类的析构函数必须是 virtual 的，否则 C++ 只会调用基类的析构函数，不会调用派生类的析构函数。
+```cpp
+#include <iostream>
+
+class Base
+{
+public:
+	Base() { std::cout << "Base Constructor\n"; }
+	~Base(){ std::cout << "Base Destructor\n"; }
+    //virtual ~Base(){ std::cout << "Base Destructor\n"; }
+};
+class Derived : public Base
+{
+public:
+	Derived() { m_Array = new int[5]; std::cout << "Derived Constructor\n"; }
+	~Derived(){ delete[] m_Array; std::cout << "Derived Destructor\n"; }
+private:
+	int* m_Array;
+};
+
+int main()
+{
+	Base* base = new Base();
+	delete base;
+	std::cout << "------------------------\n";
+	Derived* derived = new Derived();
+	delete derived;
+	std::cout << "------------------------\n";
+	Base* poly = new Derived();
+	delete poly;
+
+	std::cin.get();
+}
+/*
+Base Constructor
+Base Destructor
+------------------------
+Base Constructor
+Derived Constructor
+Derived Destructor
+Base Destructor
+------------------------
+Base Constructor
+Derived Constructor
+//Derived Destructor (写上虚析构函数后)
+Base Destructor
+*/
+```
+
+### C++ 类型转换
+cast 分为`static_cast` `dynamic_cast` `reinterpret_cast` `const_cast`
+ * `static_cast` `static_cast` 用于进行比较“自然”和低风险的转换，如整型和浮点型、字符型之间的互相转换,不能用于指针类型的强制转换
+ * `reinterpret_cast` 用于进行各种不同类型的指针之间强制转换
+ * `const_cast` 仅用于进行去除 const 属性的转换
+ * `dynamic_cast` 不检查转换安全性，仅运行时检查，如果不能转换，返回`null`
+
+### 条件与操作断点
+有条件的控制断点的执行
+
+### 现代C++的安全问题
+安全编程：我们希望降低崩溃、内存泄漏、非法访问等问题
+用于生产环境使用智能指针，用于学习和了解工作积累，使用原始指针，当然，如果你需要定制的话，也可以使用自己写的智能指针
+
+### 预编译头文件
+在大型项目中，编译时间较长，预编译是减少这一时间的手段。
+为什么不把所以东西全放进预编译头文件中？因为不好修改
+
+写一个`main.cpp`
+```cpp
+#include "pch.h"
+
+int main()
+{
+	std::cout << "------------------------" << std::endl;
+}
+```
+一个`pch.cpp`文件
+```cpp
+#include "pch.h"
+```
+一个`pch.h`文件
+```cpp
+#pragma once
+
+#include <iostream>
+#include <algorithm>
+#include <functional>
+#include <memory>
+#include <thread>
+#include <utility>
+
+//Data structures
+#include <string>
+#include <stack>
+#include <deque>
+#include <array>
+#include <vector>
+#include <set>
+#include <map>
+#include <unordered_set>
+#include <unordered_map>
+
+//Windows API
+#include <Windows.h>
+```
+对`pch.cpp`文件进行设置
+![fileset](fileset.png)
+对项目整体进行设置
+![projset](projset.png)
+
+在MSVC环境下的提升（也可以使用gcc测试一下，效果更显著）：
+```
+//使用预编译头文件前
+1>项目性能摘要:
+1>     2459 毫秒 C:\Dev\cppTest\cppTest\cppTest.vcxproj     1 次调用
+//使用预编译头文件后
+1>项目性能摘要:
+1>     1618 毫秒 C:\Dev\cppTest\cppTest\cppTest.vcxproj     1 次调用
+```
+
+### C++ dynamic_cast
+
+
+### C++ 基准测试
+基准测试（benchmarking）其实就是一种性能测试，只不过会偏向于强调可对比性。
+在计算机领域，基准是指运行一个计算机程序、一组程序或其他操作的行为，以评估一个对象的相对性能，通常是通过对它进行一些标准测试和试验。
+
+在VS2022的debug模式下测试，下列通过写一个计时器计时的方式是有效的。但是在release模式下，用于for循环会被优化，在编译时就会把结果计算出来，而不是运行时，所以这种测试在release模式下就失效了，根本不会进行计时。一定要确保你的测试和测试后的代码在release时是有意义的。
+
+```cpp
+#include <iostream>
+#include <memory>
+#include <chrono>
+
+class Timer
+{
+    //当对象被创建时开始计时，对象被销毁时停止计时，RAII(Resource Acquisition Is Initialization)
+public:
+	Timer()
+	{
+		m_StartTimepoint = std::chrono::high_resolution_clock::now();
+	}
+	~Timer()
+	{
+		Stop();
+	}
+	void Stop()
+	{
+		auto endTimepoint = std::chrono::high_resolution_clock::now();
+
+		auto start = std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimepoint).time_since_epoch().count();
+		auto end = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch().count();
+
+		auto duration = end - start;
+
+		double ms = duration * 0.001;
+
+		std::cout << duration << "us(" << ms << "ms)\n";
+	}
+private:
+	std::chrono::time_point< std::chrono::high_resolution_clock> m_StartTimepoint;
+};
+
+int main()
+{
+	int value = 0;
+	{
+		Timer timer;
+		for (int i = 0; i < 1000000; i++)
+		{
+			value += 2;
+		}
+	}
+	std::cout << value << std::endl;
+
+	__debugbreak();
+}
+/*
+debug
+492us(0.492ms)
+2000000
+
+release
+0us(0ms)
+2000000
+*/
+```
+
+
+### C++ 处理多个不同类型的返回
+用结构体
+### C++ 结构化绑定
+
+结构化绑定是C++17以后的新特性，能让我们更好的处理多返回值问题。
+
+C++11 新增了`std::tuple`容器用于构造一个元组。我们可以使用`std::tie`对元组进行拆包，但我们依然必须非常清楚这个元组包含多少个对象，各个对象是什么类型，非常麻烦。
+
+C++17 完善了这一设定，给出了 结构化绑定。
+
+之前的使用结构体的方式：
+```cpp
+#include <iostream>
+#include <string>
+#include <tuple>
+
+struct Person
+{
+	std::string Name;
+	int Age;
+};
+
+std::tuple<std::string, int> CreatePerson()
+{
+	return { "Odrin" , 24 };
+}
+
+int main()
+{
+	Person p;
+	std::tie(p.Name, p.Age) = CreatePerson();
+}
+```
+结构化绑定的方式：
+```cpp
+#include <iostream>
+#include <string>
+#include <tuple>
+
+std::tuple<std::string, int> CreatePerson()
+{
+	return { "Odrin" , 24 };
+}
+
+int main()
+{
+	auto[name, age] = CreatePerson();
+	std::cout << name;
+}
+```
+
+
+### 如何处理OPTIONAL数据
+
+
+### 单一变量存放多类型数据
+
+
+### 如何存储任意类型的数据
+
+
+### 如何让C++运行得更快
+
+
+### 如何让C++字符串更快
+
+
+### C++ 可视化基准测试
+
+
+### C++ 单例模式
+
+
+### C++ 小字符串优化
+
+
+### 跟踪内存分配的简单方法
+
+
+### C++ 左值与右值
+
+
+### C++ 持续集成
+
+
+### C++ 静态分析
+
+
+### C++ 参数计算顺序
+
+
+### C++ 移动语义
+
+
+### C++ stdmove与移动赋值操作符
+
 
 ### C++ 编写桌面程序的推荐方法
 ImGUI:Dear ImGui is a bloat-free graphical user interface library for C++.

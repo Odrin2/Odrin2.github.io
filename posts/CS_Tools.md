@@ -1119,6 +1119,7 @@ I got a SIGINT, but I am not stopping
 尽管`SIGINT`和`SIGQUIT`都常常用来发出和终止程序相关的请求。`SIGTERM`则是一个更加通用的、也更加优雅地退出信号。为了发出这个信号我们需要使用 [`kill`](https://www.man7.org/linux/man-pages/man1/kill.1.html) 命令, 它的语法是：`kill -TERM <PID>`。
 
 #### 暂停和后台执行进程
+
 信号可以让进程做其他的事情，而不仅仅是终止它们。例如，`SIGSTOP`会让进程暂停。在终端中，键入`Ctrl-Z`会让 shell 发送`SIGTSTP`信号，`SIGTSTP`是 Terminal Stop 的缩写（即`terminal`版本的SIGSTOP）。
 
 我们可以使用 [`fg`](https://www.man7.org/linux/man-pages/man1/fg.1p.html) 或 [`bg`](http://man7.org/linux/man-pages/man1/bg.1p.html) 命令恢复暂停的工作。它们分别表示在前台继续或在后台继续。
@@ -1216,12 +1217,13 @@ $ jobs
 ### 别名
 
 输入一长串包含许多选项的命令会非常麻烦。因此，大多数 shell 都支持设置别名。shell 的别名相当于一个长命令的缩写，shell 会自动将其替换成原本的命令。例如，bash 中的别名语法如下：
-
+```shell
 alias alias_name="command_to_alias arg1 arg2"
+```
 注意， =两边是没有空格的，因为 alias 是一个 shell 命令，它只接受一个参数。
 
 别名有许多很方便的特性:
-```python
+```shell
 # 创建常用命令的缩写
 alias ll="ls -lh"
 
@@ -1250,33 +1252,34 @@ unalias la
 alias ll
 # 会打印 ll='ls -lh'
 ```
-值得注意的是，在默认情况下 shell 并不会保存别名。为了让别名持续生效，您需要将配置放进 shell 的启动文件里，像是.bashrc 或 .zshrc，下一节我们就会讲到。
+值得注意的是，在默认情况下 shell 并不会保存别名。为了让别名持续生效，您需要将配置放进 shell 的启动文件里，像是```.bashrc``` 或 ```.zshrc```，下一节我们就会讲到。
 
 ### 配置文件（Dotfiles）
-很多程序的配置都是通过纯文本格式的被称作点文件的配置文件来完成的（之所以称为点文件，是因为它们的文件名以 . 开头，例如 ~/.vimrc。也正因为此，它们默认是隐藏文件，ls并不会显示它们）。
+很多程序的配置都是通过纯文本格式的被称作"点文件"的配置文件来完成的（之所以称为点文件，是因为它们的文件名以 . 开头，例如 ~/.vimrc。也正因为此，它们默认是隐藏文件，ls并不会显示它们）。
 
-shell 的配置也是通过这类文件完成的。在启动时，您的 shell 程序会读取很多文件以加载其配置项。根据 shell 本身的不同，您从登录开始还是以交互的方式完成这一过程可能会有很大的不同。关于这一话题，这里 有非常好的资源
+shell 的配置也是通过这类文件完成的。在启动时，您的 shell 程序会读取很多文件以加载其配置项。根据 shell 本身的不同，您从登录开始还是以交互的方式完成这一过程可能会有很大的不同。关于这一话题，[这里](https://blog.flowblok.id.au/2013-02/shell-startup-scripts.html)有非常好的资源
 
-对于 bash来说，在大多数系统下，您可以通过编辑 .bashrc 或 .bash_profile 来进行配置。在文件中您可以添加需要在启动时执行的命令，例如上文我们讲到过的别名，或者是您的环境变量。
+对于 `bash`来说，在大多数系统下，您可以通过编辑 `.bashrc` 或 `.bash_profile` 来进行配置。在文件中您可以添加需要在启动时执行的命令，例如上文我们讲到过的别名，或者是您的环境变量。
 
-实际上，很多程序都要求您在 shell 的配置文件中包含一行类似 export PATH="$PATH:/path/to/program/bin" 的命令，这样才能确保这些程序能够被 shell 找到。
+实际上，很多程序都要求您在 shell 的配置文件中包含一行类似 `export PATH="$PATH:/path/to/program/bin"` 的命令，这样才能确保这些程序能够被 shell 找到。
 
 还有一些其他的工具也可以通过点文件进行配置：
 
-bash - ~/.bashrc, ~/.bash_profile
-git - ~/.gitconfig
-vim - ~/.vimrc 和 ~/.vim 目录
-ssh - ~/.ssh/config
-tmux - ~/.tmux.conf
-我们应该如何管理这些配置文件呢，它们应该在它们的文件夹下，并使用版本控制系统进行管理，然后通过脚本将其 符号链接 到需要的地方。这么做有如下好处：
+- `bash` - `~/.bashrc`, `~/.bash_profile`
+- `git` - `~/.gitconfig`
+- `vim` - `~/.vimrc` 和 `~/.vim` 目录
+- `ssh` - `~/.ssh/config`
+- `tmux` - `~/.tmux.conf`
+我们应该如何管理这些配置文件呢，它们应该在它们的文件夹下，并使用版本控制系统进行管理，然后通过脚本将其**符号链接**到需要的地方。这么做有如下好处：
 
-安装简单: 如果您登录了一台新的设备，在这台设备上应用您的配置只需要几分钟的时间；
-可以执行: 您的工具在任何地方都以相同的配置工作
-同步: 在一处更新配置文件，可以同步到其他所有地方
-变更追踪: 您可能要在整个程序员生涯中持续维护这些配置文件，而对于长期项目而言，版本历史是非常重要的
-配置文件中需要放些什么？您可以通过在线文档和帮助手册了解所使用工具的设置项。另一个方法是在网上搜索有关特定程序的文章，作者们在文章中会分享他们的配置。还有一种方法就是直接浏览其他人的配置文件：您可以在这里找到无数的dotfiles 仓库 —— 其中最受欢迎的那些可以在这里找到（我们建议您不要直接复制别人的配置）。这里 也有一些非常有用的资源。
+- **安装简单**: 如果您登录了一台新的设备，在这台设备上应用您的配置只需要几分钟的时间；
+- **可以执行**: 您的工具在任何地方都以相同的配置工作
+- **同步**: 在一处更新配置文件，可以同步到其他所有地方
+- **变更追踪**: 您可能要在整个程序员生涯中持续维护这些配置文件，而对于长期项目而言，版本历史是非常重要的
 
-本课程的老师们也在 GitHub 上开源了他们的配置文件： Anish, Jon, Jose.
+配置文件中需要放些什么？您可以通过在线文档和[帮助手册](https://en.wikipedia.org/wiki/Man_page)了解所使用工具的设置项。另一个方法是在网上搜索有关特定程序的文章，作者们在文章中会分享他们的配置。还有一种方法就是直接浏览其他人的配置文件：您可以在这里找到无数的[dotfiles 仓库](https://github.com/search?o=desc&q=dotfiles&s=stars&type=Repositories) —— 其中最受欢迎的那些可以在[这里](https://github.com/mathiasbynens/dotfiles)找到（我们建议您不要直接复制别人的配置）。[这里](https://dotfiles.github.io/) 也有一些非常有用的资源。
+
+本课程的老师们也在 GitHub 上开源了他们的配置文件： [Anish](https://github.com/anishathalye/dotfiles), [Jon](https://github.com/jonhoo/configs), [Jose](https://github.com/jjgo/dotfiles).
 
 #### 可移植性
 配置文件的一个常见的痛点是它可能并不能在多种设备上生效。例如，如果您在不同设备上使用的操作系统或者 shell 是不同的，则配置文件是无法生效的。或者，有时您仅希望特定的配置只在某些设备上生效。
@@ -1298,7 +1301,7 @@ if [[ "$(hostname)" == "myServer" ]]; then {do_something}; fi
 ```
 然后我们可以在日常使用的设备上创建配置文件`~/.gitconfig_local` 来包含与该设备相关的特定配置。您甚至应该创建一个单独的代码仓库来管理这些与设备相关的配置。
 
-如果您希望在不同的程序之间共享某些配置，该方法也适用。例如，如果您想要在 bash 和 zsh 中同时启用一些别名，您可以把它们写在 .aliases 里，然后在这两个 shell 里应用：
+如果您希望在不同的程序之间共享某些配置，该方法也适用。例如，如果您想要在`bash`和`zsh`中同时启用一些别名，您可以把它们写在`.aliases`里，然后在这两个 shell 里应用：
 ```shell
 # Test if ~/.aliases exists and source it
 if [ -f ~/.aliases ]; then
@@ -1306,62 +1309,67 @@ if [ -f ~/.aliases ]; then
 fi
 ```
 ### 远端设备
-对于程序员来说，在他们的日常工作中使用远程服务器已经非常普遍了。如果您需要使用远程服务器来部署后端软件或您需要一些计算能力强大的服务器，您就会用到安全 shell（SSH）。和其他工具一样，SSH 也是可以高度定制的，也值得我们花时间学习它。
+对于程序员来说，在他们的日常工作中使用远程服务器已经非常普遍了。如果您需要使用远程服务器来部署后端软件或您需要一些计算能力强大的服务器，您就会用到Secure Shell，简称SSH。和其他工具一样，SSH 也是可以高度定制的，也值得我们花时间学习它。
 
-通过如下命令，您可以使用 ssh 连接到其他服务器：
+通过如下命令，您可以使用`ssh`连接到其他服务器：
 ```shell
 ssh foo@bar.mit.edu
 ```
-这里我们尝试以用户名 foo 登录服务器 bar.mit.edu。服务器可以通过 URL 指定（例如bar.mit.edu），也可以使用 IP 指定（例如foobar@192.168.1.42）。后面我们会介绍如何修改 ssh 配置文件使我们可以用类似 ssh bar 这样的命令来登录服务器。
+这里我们尝试以用户名`foo`登录服务器`bar.mit.edu`。服务器可以通过 URL 指定（例如`bar.mit.edu`），也可以使用 IP 指定（例如`foobar@192.168.1.42`）。后面我们会介绍如何修改`ssh`配置文件使我们可以用类似`ssh bar`这样的命令来登录服务器。
 
 #### 执行命令
-ssh 的一个经常被忽视的特性是它可以直接远程执行命令。 ssh foobar@server ls 可以直接在用foobar的命令下执行 ls 命令。 想要配合管道来使用也可以， ssh foobar@server ls | grep PATTERN 会在本地查询远端 ls 的输出而 ls | ssh foobar@server grep PATTERN 会在远端对本地 ls 输出的结果进行查询。
+`ssh`的一个经常被忽视的特性是它可以直接远程执行命令。`ssh foobar@server ls`可以直接在用foobar的命令下执行`ls`命令。 想要配合管道来使用也可以，`ssh foobar@server ls | grep PATTERN`会在本地查询远端`ls`的输出而`ls | ssh foobar@server grep PATTERN`会在远端对本地`ls`输出的结果进行查询。
 
 #### SSH 密钥
-基于密钥的验证机制使用了密码学中的公钥，我们只需要向服务器证明客户端持有对应的私钥，而不需要公开其私钥。这样您就可以避免每次登录都输入密码的麻烦了秘密就可以登录。不过，私钥(通常是 ~/.ssh/id_rsa 或者 ~/.ssh/id_ed25519) 等效于您的密码，所以一定要好好保存它。
+基于密钥的验证机制使用了密码学中的公钥，我们只需要向服务器证明客户端持有对应的私钥，而不需要公开其私钥。这样您就可以避免每次登录都输入密码的麻烦了，秘密就可以登录。不过，私钥(通常是`~/.ssh/id_rsa`或者`~/.ssh/id_ed25519`) 等效于您的密码，所以一定要好好保存它。
 
 #### 密钥生成
-使用 ssh-keygen 命令可以生成一对密钥：
-
+使用[`ssh-keygen`](http://man7.org/linux/man-pages/man1/ssh-keygen.1.html)命令可以生成一对密钥：
+```shell
 ssh-keygen -o -a 100 -t ed25519 -f ~/.ssh/id_ed25519
-您可以为密钥设置密码，防止有人持有您的私钥并使用它访问您的服务器。您可以使用 ssh-agent 或 gpg-agent ，这样就不需要每次都输入该密码了。
+```
+您可以为密钥设置密码，防止有人持有您的私钥并使用它访问您的服务器。您可以使用[`ssh-agent`](https://www.man7.org/linux/man-pages/man1/ssh-agent.1.html)或[`gpg-agent`](https://linux.die.net/man/1/gpg-agent)，这样就不需要每次都输入该密码了。
 
-如果您曾经配置过使用 SSH 密钥推送到 GitHub，那么可能您已经完成了这里 介绍的这些步骤，并且已经有了一个可用的密钥对。要检查您是否持有密码并验证它，您可以运行 ssh-keygen -y -f /path/to/key.
+如果您曾经配置过使用 SSH 密钥推送到 GitHub，那么可能您已经完成了[这里](https://help.github.com/articles/connecting-to-github-with-ssh/)介绍的这些步骤，并且已经有了一个可用的密钥对。要检查您是否持有密码并验证它，您可以运行 `ssh-keygen -y -f /path/to/key`.
 
 #### 基于密钥的认证机制
 
-ssh 会查询 .ssh/authorized_keys 来确认那些用户可以被允许登录。您可以通过下面的命令将一个公钥拷贝到这里：
-
+`ssh`会查询`.ssh/authorized_keys`来确认那些用户可以被允许登录。您可以通过下面的命令将一个公钥拷贝到这里：
+```shell
 cat .ssh/id_ed25519 | ssh foobar@remote 'cat >> ~/.ssh/authorized_keys'
-如果支持 ssh-copy-id 的话，可以使用下面这种更简单的解决方案：
-
+```
+如果支持`ssh-copy-id`的话，可以使用下面这种更简单的解决方案：
+```shell
 ssh-copy-id -i .ssh/id_ed25519.pub foobar@remote
+```
 
 #### 通过 SSH 复制文件
 
 使用 ssh 复制文件有很多方法：
 
-ssh+tee, 最简单的方法是执行 ssh 命令，然后通过这样的方法利用标准输入实现 cat localfile | ssh remote_server tee serverfile。回忆一下，tee 命令会将标准输出写入到一个文件；
-scp ：当需要拷贝大量的文件或目录时，使用scp 命令则更加方便，因为它可以方便的遍历相关路径。语法如下：scp path/to/local_file remote_host:path/to/remote_file；
-rsync 对 scp 进行了改进，它可以检测本地和远端的文件以防止重复拷贝。它还可以提供一些诸如符号连接、权限管理等精心打磨的功能。甚至还可以基于 --partial标记实现断点续传。rsync 的语法和scp类似；
+- `ssh+tee`, 最简单的方法是执行`ssh`命令，然后通过这样的方法利用标准输入实现`cat localfile | ssh remote_server tee serverfile`。回忆一下[`tee`](https://www.man7.org/linux/man-pages/man1/tee.1.html)命令会将标准输出写入到一个文件；
+- [`scp`](https://www.man7.org/linux/man-pages/man1/scp.1.html) ：当需要拷贝大量的文件或目录时，使用`scp`命令则更加方便，因为它可以方便的遍历相关路径。语法如下：`scp path/to/local_file remote_host:path/to/remote_file`；
+- [`rsync`](https://www.man7.org/linux/man-pages/man1/rsync.1.html) 对`scp`进行了改进，它可以检测本地和远端的文件以防止重复拷贝。它还可以提供一些诸如符号连接、权限管理等精心打磨的功能。甚至还可以基于`--partial`标记实现断点续传。`rsync`的语法和`scp`类似；
 
 #### 端口转发
 
-很多情况下我们都会遇到软件需要监听特定设备的端口。如果是在您的本机，可以使用 localhost:PORT 或 127.0.0.1:PORT。但是如果需要监听远程服务器的端口该如何操作呢？这种情况下远端的端口并不会直接通过网络暴露给您。
+很多情况下我们都会遇到软件需要监听特定设备的端口。如果是在您的本机，可以使用`localhost:PORT`或`127.0.0.1:PORT`。但是如果需要监听远程服务器的端口该如何操作呢？这种情况下远端的端口并不会直接通过网络暴露给您。
 
-此时就需要进行 端口转发。端口转发有两种，一种是本地端口转发和远程端口转发（参见下图，该图片引用自这篇StackOverflow 文章）中的图片。
+此时就需要进行**端口转发**。端口转发有两种，一种是本地端口转发和远程端口转发（参见下图，该图片引用自这篇[StackOverflow](https://unix.stackexchange.com/questions/115897/whats-ssh-port-forwarding-and-whats-the-difference-between-ssh-local-and-remot)文章）中的图片。
 
 #### 本地端口转发Local Port Forwarding
-
+![Local Port Forwarding](local.png)
 #### 远程端口转发Remote Port Forwarding
+![Remote Port Forwarding](remote.png)
 
-常见的情景是使用本地端口转发，即远端设备上的服务监听一个端口，而您希望在本地设备上的一个端口建立连接并转发到远程端口上。例如，我们在远端服务器上运行 Jupyter notebook 并监听 8888 端口。 然后，建立从本地端口 9999 的转发，使用 ssh -L 9999:localhost:8888 foobar@remote_server 。这样只需要访问本地的 localhost:9999 即可。
+常见的情景是使用本地端口转发，即远端设备上的服务监听一个端口，而您希望在本地设备上的一个端口建立连接并转发到远程端口上。例如，我们在远端服务器上运行 Jupyter notebook 并监听`8888`端口。 然后，建立从本地端口`9999`的转发，使用`ssh -L 9999:localhost:8888 foobar@remote_server`。这样只需要访问本地的`localhost:9999`即可。
 
 #### SSH 配置
 我们已经介绍了很多参数。为它们创建一个别名是个好想法，我们可以这样做：
-
+```shell
 alias my_server="ssh -i ~/.id_ed25519 --port 2222 -L 9999:localhost:8888 foobar@remote_server
-不过，更好的方法是使用 ~/.ssh/config.
+```
+不过，更好的方法是使用`~/.ssh/config`.
 ```shell
 Host vm
     User foobar
@@ -1374,86 +1382,100 @@ Host vm
 Host *.mit.edu
     User foobaz
 ```
-这么做的好处是，使用 ~/.ssh/config 文件来创建别名，类似 scp、rsync和mosh的这些命令都可以读取这个配置并将设置转换为对应的命令行选项。
+这么做的好处是，使用`~/.ssh/config`文件来创建别名，类似`scp`、`rsync`和`mosh`的这些命令都可以读取这个配置并将设置转换为对应的命令行选项。
 
-注意，~/.ssh/config 文件也可以被当作配置文件，而且一般情况下也是可以被导入其他配置文件的。不过，如果您将其公开到互联网上，那么其他人都将会看到您的服务器地址、用户名、开放端口等等。这些信息可能会帮助到那些企图攻击您系统的黑客，所以请务必三思。
+注意，`~/.ssh/config`文件也可以被当作配置文件，而且一般情况下也是可以被导入其他配置文件的。不过，如果您将其公开到互联网上，那么其他人都将会看到您的服务器地址、用户名、开放端口等等。这些信息可能会帮助到那些企图攻击您系统的黑客，所以请务必三思。
 
-服务器侧的配置通常放在 /etc/ssh/sshd_config。您可以在这里配置免密认证、修改 ssh 端口、开启 X11 转发等等。 您也可以为每个用户单独指定配置。
+服务器侧的配置通常放在`/etc/ssh/sshd_config`。您可以在这里配置免密认证、修改 ssh 端口、开启 X11 转发等等。 您也可以为每个用户单独指定配置。
 
 #### 杂项
-连接远程服务器的一个常见痛点是遇到由关机、休眠或网络环境变化导致的掉线。如果连接的延迟很高也很让人讨厌。Mosh（即 mobile shell ）对 ssh 进行了改进，它允许连接漫游、间歇连接及智能本地回显。
+连接远程服务器的一个常见痛点是遇到由关机、休眠或网络环境变化导致的掉线。如果连接的延迟很高也很让人讨厌。[Mosh](https://mosh.org/)（即 mobile shell ）对 ssh 进行了改进，它允许连接漫游、间歇连接及智能本地回显。
 
-有时将一个远端文件夹挂载到本地会比较方便， sshfs 可以将远端服务器上的一个文件夹挂载到本地，然后您就可以使用本地的编辑器了。
+有时将一个远端文件夹挂载到本地会比较方便，[sshfs](https://github.com/libfuse/sshfs) 可以将远端服务器上的一个文件夹挂载到本地，然后您就可以使用本地的编辑器了。
 
 ### Shell & 框架
-在 shell 工具和脚本那节课中我们已经介绍了 bash shell，因为它是目前最通用的 shell，大多数的系统都将其作为默认 shell。但是，它并不是唯一的选项。
+在 shell 工具和脚本那节课中我们已经介绍了 `bash` shell，因为它是目前最通用的 shell，大多数的系统都将其作为默认 shell。但是，它并不是唯一的选项。
 
-例如，zsh shell 是 bash 的超集并提供了一些方便的功能：
+例如，`zsh` shell 是 `bash` 的超集并提供了一些方便的功能：
 
-智能替换, **
-行内替换/通配符扩展
-拼写纠错
-更好的 tab 补全和选择
-路径展开 (cd /u/lo/b 会被展开为 /usr/local/bin)
-框架 也可以改进您的 shell。比较流行的通用框架包括prezto 或 oh-my-zsh。还有一些更精简的框架，它们往往专注于某一个特定功能，例如zsh 语法高亮 或 zsh 历史子串查询。 像 fish 这样的 shell 包含了很多用户友好的功能，其中一些特性包括：
+- 智能替换,`**`
+- 行内替换/通配符扩展
+- 拼写纠错
+- 更好的 tab 补全和选择
+- 路径展开 (`cd /u/lo/b` 会被展开为 `/usr/local/bin`)
 
-向右对齐
-命令语法高亮
-历史子串查询
-基于手册页面的选项补全
-更智能的自动补全
-提示符主题
+**框架**也可以改进您的shell。比较流行的通用框架包括[prezto](https://github.com/sorin-ionescu/prezto)或[oh-my-zsh](https://ohmyz.sh/)。还有一些更精简的框架，它们往往专注于某一个特定功能，例如[zsh语法高亮](https://github.com/zsh-users/zsh-syntax-highlighting) 或 [zsh历史子串查询](https://github.com/zsh-users/zsh-history-substring-search)。 像[fish](https://fishshell.com/)这样的shell包含了很多用户友好的功能，其中一些特性包括：
+
+- 向右对齐
+- 命令语法高亮
+- 历史子串查询
+- 基于手册页面的选项补全
+- 更智能的自动补全
+- 提示符主题
+
 需要注意的是，使用这些框架可能会降低您 shell 的性能，尤其是如果这些框架的代码没有优化或者代码过多。您随时可以测试其性能或禁用某些不常用的功能来实现速度与功能的平衡。
 
-终端模拟器
-和自定义 shell 一样，花点时间选择适合您的 终端模拟器并进行设置是很有必要的。有许多终端模拟器可供您选择（这里有一些关于它们之间比较的信息）
+### 终端模拟器
+
+和自定义 shell 一样，花点时间选择适合您的**终端模拟器**并进行设置是很有必要的。有许多终端模拟器可供您选择（这里有一些关于它们之间[比较](https://anarc.at/blog/2018-04-12-terminal-emulators-1/)的信息）
 
 您会花上很多时间在使用终端上，因此研究一下终端的设置是很有必要的，您可以从下面这些方面来配置您的终端：
 
-字体选择
-彩色主题
-快捷键
-标签页/面板支持
-回退配置
-性能（像 Alacritty 或者 kitty 这种比较新的终端，它们支持GPU加速）。
+- 字体选择
+- 彩色主题
+- 快捷键
+- 标签页/面板支持
+- 回退配置
+- 性能（像[Alacritty](https://github.com/jwilm/alacritty)或者[kitty](https://sw.kovidgoyal.net/kitty/)这种比较新的终端，它们支持GPU加速）。
+
 ### 课后练习
 
-任务控制
+#### 任务控制
+
 我们可以使用类似 ps aux | grep 这样的命令来获取任务的 pid ，然后您可以基于pid 来结束这些进程。但我们其实有更好的方法来做这件事。在终端中执行 sleep 10000 这个任务。然后用 Ctrl-Z 将其切换到后台并使用 bg来继续允许它。现在，使用 pgrep 来查找 pid 并使用 pkill 结束进程而不需要手动输入pid。(提示：: 使用 -af 标记)。
 
 如果您希望某个进程结束后再开始另外一个进程， 应该如何实现呢？在这个练习中，我们使用 sleep 60 & 作为先执行的程序。一种方法是使用 wait 命令。尝试启动这个休眠命令，然后待其结束后再执行 ls 命令。
 
 但是，如果我们在不同的 bash 会话中进行操作，则上述方法就不起作用了。因为 wait 只能对子进程起作用。之前我们没有提过的一个特性是，kill 命令成功退出时其状态码为 0 ，其他状态则是非0。kill -0 则不会发送信号，但是会在进程不存在时返回一个不为0的状态码。请编写一个 bash 函数 pidwait ，它接受一个 pid 作为输入参数，然后一直等待直到该进程结束。您需要使用 sleep 来避免浪费 CPU 性能。
 
-终端多路复用
+#### 终端多路复用
+
 请完成这个 tmux 教程 参考这些步骤来学习如何自定义 tmux。
-别名
-创建一个 dc 别名，它的功能是当我们错误的将 cd 输入为 dc 时也能正确执行。
-执行 history | awk '{$1="";print substr($0,2)}' | sort | uniq -c | sort -n | tail -n 10 来获取您最常用的十条命令，尝试为它们创建别名。注意：这个命令只在 Bash 中生效，如果您使用 ZSH，使用history 1 替换 history。
-配置文件
+
+#### 别名
+
+- 创建一个 dc 别名，它的功能是当我们错误的将 cd 输入为 dc 时也能正确执行。
+- 执行 history | awk '{$1="";print substr($0,2)}' | sort | uniq -c | sort -n | tail -n 10 来获取您最常用的十条命令，尝试为它们创建别名。注意：这个命令只在 Bash 中生效，如果您使用 ZSH，使用history 1 替换 history。
+
+#### 配置文件
+
 让我们帮助您进一步学习配置文件：
 
-为您的配置文件新建一个文件夹，并设置好版本控制
-在其中添加至少一个配置文件，比如说您的 shell，在其中包含一些自定义设置（可以从设置 $PS1 开始）。
-建立一种在新设备进行快速安装配置的方法（无需手动操作）。最简单的方法是写一个 shell 脚本对每个文件使用 ln -s，也可以使用专用工具
-在新的虚拟机上测试该安装脚本。
-将您现有的所有配置文件移动到项目仓库里。
-将项目发布到GitHub。
-远端设备
+- 为您的配置文件新建一个文件夹，并设置好版本控制
+- 在其中添加至少一个配置文件，比如说您的 shell，在其中包含一些自定义设置（可以从设置 $PS1 开始）。
+- 建立一种在新设备进行快速安装配置的方法（无需手动操作）。最简单的方法是写一个 shell 脚本对每个文件使用 ln -s，也可以使用专用工具
+- 在新的虚拟机上测试该安装脚本。
+- 将您现有的所有配置文件移动到项目仓库里。
+- 将项目发布到GitHub。
+
+#### 远端设备
+
 进行下面的练习需要您先安装一个 Linux 虚拟机（如果已经安装过则可以直接使用），如果您对虚拟机尚不熟悉，可以参考这篇教程 来进行安装。
 
-前往 ~/.ssh/ 并查看是否已经存在 SSH 密钥对。如果不存在，请使用ssh-keygen -o -a 100 -t ed25519来创建一个。建议为密钥设置密码然后使用ssh-agent，更多信息可以参考 这里；
+- 前往 ~/.ssh/ 并查看是否已经存在 SSH 密钥对。如果不存在，请使用ssh-keygen -o -a 100 -t ed25519来创建一个。建议为密钥设置密码然后使用ssh-agent，更多信息可以参考 这里；
 在.ssh/config加入下面内容：
+```shell
 Host vm
     User username_goes_here
     HostName ip_goes_here
     IdentityFile ~/.ssh/id_ed25519
     LocalForward 9999 localhost:8888
-使用 ssh-copy-id vm 将您的 ssh 密钥拷贝到服务器。
-使用python -m http.server 8888 在您的虚拟机中启动一个 Web 服务器并通过本机的http://localhost:9999 访问虚拟机上的 Web 服务器
-使用sudo vim /etc/ssh/sshd_config 编辑 SSH 服务器配置，通过修改PasswordAuthentication的值来禁用密码验证。通过修改PermitRootLogin的值来禁用 root 登录。然后使用sudo service sshd restart重启 ssh 服务器，然后重新尝试。
-(附加题) 在虚拟机中安装 mosh 并启动连接。然后断开服务器/虚拟机的网络适配器。mosh可以恢复连接吗？
-(附加题) 查看ssh的-N 和 -f 选项的作用，找出在后台进行端口转发的命令是什么？
+```
+- 使用`ssh-copy-id vm`将您的 ssh 密钥拷贝到服务器。
+- 使用`python -m http.server 8888`在您的虚拟机中启动一个 Web 服务器并通过本机的`http://localhost:9999`访问虚拟机上的 Web 服务器
+- 使用`sudo vim /etc/ssh/sshd_config`编辑 SSH 服务器配置，通过修改`PasswordAuthentication`的值来禁用密码验证。通过修改`PermitRootLogin`的值来禁用 root 登录。然后使用`sudo service sshd restart`重启`ssh`服务器，然后重新尝试。
+- (附加题) 在虚拟机中安装 mosh 并启动连接。然后断开服务器/虚拟机的网络适配器。mosh可以恢复连接吗？
+- (附加题) 查看ssh的-N 和 -f 选项的作用，找出在后台进行端口转发的命令是什么？
 
 ## 主题六: 版本控制(Git)
 
@@ -1467,20 +1489,22 @@ Host vm
 - 这个文件的这一行是什么时候被编辑的？是谁作出的修改？修改原因是什么呢？
 - 最近的1000个版本中，何时/为什么导致了单元测试失败？
 
-尽管版本控制系统有很多， 其事实上的标准则是 Git 。而这篇 XKCD 漫画 则反映出了人们对 Git 的评价：
+尽管版本控制系统有很多， 其事实上的标准则是**Git**。而这篇[XKCD 漫画](https://xkcd.com/1597/)则反映出了人们对 Git 的评价：
 
 ![git](git.png)
 
 因为 Git 接口的抽象泄漏（leaky abstraction）问题，通过自顶向下的方式（从命令行接口开始）学习 Git 可能会让人感到非常困惑。很多时候您只能死记硬背一些命令行，然后像使用魔法一样使用它们，一旦出现问题，就只能像上面那幅漫画里说的那样去处理了。
 
-尽管 Git 的接口有些丑陋，但是它的底层设计和思想却是非常优雅的。丑陋的接口只能靠死记硬背，而优雅的底层设计则非常容易被人理解。因此，我们将通过一种自底向上的方式向您介绍 Git。我们会从数据模型开始，最后再学习它的接口。一旦您搞懂了 Git 的数据模型，再学习其接口并理解这些接口是如何操作数据模型的就非常容易了。
+尽管 Git 的接口有些丑陋，但是它的底层设计和思想却是非常优雅的。丑陋的接口只能靠死记硬背，而优雅的底层设计则非常容易被人理解。因此，我们将通过一种自底向上的方式向您介绍 Git。我们会从数据模型开始，最后再学习它的接口。一旦您搞懂了Git的数据模型，再学习其接口并理解这些接口是如何操作数据模型的就非常容易了。
 
-Git 的数据模型
+### Git 的数据模型
+
 进行版本控制的方法很多。Git 拥有一个经过精心设计的模型，这使其能够支持版本控制所需的所有特性，例如维护历史记录、支持分支和促进协作。
 
-快照
-Git 将顶级目录中的文件和文件夹作为集合，并通过一系列快照来管理其历史记录。在Git的术语里，文件被称作Blob对象（数据对象），也就是一组数据。目录则被称之为“树”，它将名字与 Blob 对象或树对象进行映射（使得目录中可以包含其他目录）。快照则是被追踪的最顶层的树。例如，一个树看起来可能是这样的：
+#### 快照
 
+Git 将顶级目录中的文件和文件夹作为集合，并通过一系列快照来管理其历史记录。在Git的术语里，文件被称作Blob对象（数据对象），也就是一组数据。目录则被称之为“树”，它将名字与 Blob 对象或树对象进行映射（使得目录中可以包含其他目录）。快照则是被追踪的最顶层的树。例如，一个树看起来可能是这样的：
+```
 <root> (tree)
 |
 +- foo (tree)
@@ -1488,34 +1512,36 @@ Git 将顶级目录中的文件和文件夹作为集合，并通过一系列快�
 |  + bar.txt (blob, contents = "hello world")
 |
 +- baz.txt (blob, contents = "git is wonderful")
-这个顶层的树包含了两个元素，一个名为 “foo” 的树（它本身包含了一个blob对象 “bar.txt”），以及一个 blob 对象 “baz.txt”。
+```
+这个顶层的树包含了两个元素，一个名为 “foo” 的树（它本身包含了一个blob对象 “bar.txt”），以及一个 blob对象 “baz.txt”。
 
-历史记录建模：关联快照
+#### 历史记录建模：关联快照
+
 版本控制系统和快照有什么关系呢？线性历史记录是一种最简单的模型，它包含了一组按照时间顺序线性排列的快照。不过处于种种原因，Git 并没有采用这样的模型。
 
 在 Git 中，历史记录是一个由快照组成的有向无环图。有向无环图，听上去似乎是什么高大上的数学名词。不过不要怕，您只需要知道这代表 Git 中的每个快照都有一系列的“父辈”，也就是其之前的一系列快照。注意，快照具有多个“父辈”而非一个，因为某个快照可能由多个父辈而来。例如，经过合并后的两条分支。
 
-在 Git 中，这些快照被称为“提交”。通过可视化的方式来表示这些历史提交记录时，看起来差不多是这样的：
-
+在 Git 中，**这些快照被称为“提交”**。通过可视化的方式来表示这些历史提交记录时，看起来差不多是这样的：
+```
 o <-- o <-- o <-- o
             ^  
              \
               --- o <-- o
-上面是一个 ASCII 码构成的简图，其中的 o 表示一次提交（快照）。
+```
+上面是一个 ASCII 码构成的简图，其中的 `o` 表示一次提交（快照）。
 
 箭头指向了当前提交的父辈（这是一种“在…之前”，而不是“在…之后”的关系）。在第三次提交之后，历史记录分岔成了两条独立的分支。这可能因为此时需要同时开发两个不同的特性，它们之间是相互独立的。开发完成后，这些分支可能会被合并并创建一个新的提交，这个新的提交会同时包含这些特性。新的提交会创建一个新的历史记录，看上去像这样（最新的合并提交用粗体标记）：
-
-
+```
 o <-- o <-- o <-- o <---- o
             ^            /
              \          v
               --- o <-- o
-
+```
 Git 中的提交是不可改变的。但这并不代表错误不能被修改，只不过这种“修改”实际上是创建了一个全新的提交记录。而引用（参见下文）则被更新为指向这些新的提交。
 
-数据模型及其伪代码表示
+#### 数据模型及其伪代码表示
 以伪代码的形式来学习 Git 的数据模型，可能更加清晰：
-
+```
 // 文件就是一组数据
 type blob = array<byte>
 
@@ -1529,14 +1555,17 @@ type commit = struct {
     message: string
     snapshot: tree
 }
+```
 这是一种简洁的历史模型。
 
-对象和内存寻址
+#### 对象和内存寻址
+
 Git 中的对象可以是 blob、树或提交：
-
+```
 type object = blob | tree | commit
+```
 Git 在储存数据时，所有的对象都会基于它们的 SHA-1 哈希 进行寻址。
-
+```py
 objects = map<string, object>
 
 def store(object):
@@ -1545,20 +1574,25 @@ def store(object):
 
 def load(id):
     return objects[id]
+```
 Blobs、树和提交都一样，它们都是对象。当它们引用其他对象时，它们并没有真正的在硬盘上保存这些对象，而是仅仅保存了它们的哈希值作为引用。
 
-例如，上面例子中的树（可以通过 git cat-file -p 698281bc680d1995c5f4caaf3359721a5a58d48d 来进行可视化），看上去是这样的：
-
+例如，[上面](https://missing-semester-cn.github.io/2020/version-control/#snapshots)例子中的树（可以通过`git cat-file -p 698281bc680d1995c5f4caaf3359721a5a58d48d`来进行可视化），看上去是这样的：
+```
 100644 blob 4448adbf7ecd394f42ae135bbeed9676e894af85    baz.txt
 040000 tree c68d233a33c5c06e0340e4c224f0afca87c8ce87    foo
-树本身会包含一些指向其他内容的指针，例如 baz.txt (blob) 和 foo (树)。如果我们用 git cat-file -p 4448adbf7ecd394f42ae135bbeed9676e894af85，即通过哈希值查看 baz.txt 的内容，会得到以下信息：
-
+```
+树本身会包含一些指向其他内容的指针，例如`baz.txt`(blob) 和`foo`(树)。如果我们用`git cat-file -p 4448adbf7ecd394f42ae135bbeed9676e894af85`，即通过哈希值查看 baz.txt 的内容，会得到以下信息：
+```
 git is wonderful
-引用
+```
+
+#### 引用
+
 现在，所有的快照都可以通过它们的 SHA-1 哈希值来标记了。但这也太不方便了，谁也记不住一串 40 位的十六进制字符。
 
 针对这一问题，Git 的解决方法是给这些哈希值赋予人类可读的名字，也就是引用（references）。引用是指向提交的指针。与对象不同的是，它是可变的（引用可以被更新，指向新的提交）。例如，master 引用通常会指向主分支的最新一次提交。
-
+```py
 references = map<string, string>
 
 def update_reference(name, id):
@@ -1572,18 +1606,19 @@ def load_reference(name_or_id):
         return load(references[name_or_id])
     else:
         return load(name_or_id)
+```
 这样，Git 就可以使用诸如 “master” 这样人类可读的名称来表示历史记录中某个特定的提交，而不需要在使用一长串十六进制字符了。
 
 有一个细节需要我们注意， 通常情况下，我们会想要知道“我们当前所在位置”，并将其标记下来。这样当我们创建新的快照的时候，我们就可以知道它的相对位置（如何设置它的“父辈”）。在 Git 中，我们当前的位置有一个特殊的索引，它就是 “HEAD”。
 
-仓库
-最后，我们可以粗略地给出 Git 仓库的定义了：对象 和 引用。
+#### 仓库
+最后，我们可以粗略地给出 Git 仓库的定义了：`对象` 和 `引用`。
 
-在硬盘上，Git 仅存储对象和引用：因为其数据模型仅包含这些东西。所有的 git 命令都对应着对提交树的操作，例如增加对象，增加或删除引用。
+在硬盘上，Git 仅存储对象和引用：因为其数据模型仅包含这些东西。所有的`git`命令都对应着对提交树的操作，例如增加对象，增加或删除引用。
 
-当您输入某个指令时，请思考一下这条命令是如何对底层的图数据结构进行操作的。另一方面，如果您希望修改提交树，例如“丢弃未提交的修改和将 ‘master’ 引用指向提交 5d83f9e 时，有什么命令可以完成该操作（针对这个具体问题，您可以使用 git checkout master; git reset --hard 5d83f9e）
+当您输入某个指令时，请思考一下这条命令是如何对底层的图数据结构进行操作的。另一方面，如果您希望修改提交树，例如“丢弃未提交的修改和将 ‘master’ 引用指向提交`5d83f9e`时，有什么命令可以完成该操作（针对这个具体问题，您可以使用`git checkout master; git reset --hard 5d83f9e`）
 
-暂存区
+### 暂存区
 Git 中还包括一个和数据模型完全不相关的概念，但它确是创建提交的接口的一部分。
 
 就上面介绍的快照系统来说，您也许会期望它的实现里包括一个 “创建快照” 的命令，该命令能够基于当前工作目录的当前状态创建一个全新的快照。有些版本控制系统确实是这样工作的，但 Git 不是。我们希望简洁的快照，而且每次从当前状态创建快照可能效果并不理想。例如，考虑如下场景，您开发了两个独立的特性，然后您希望创建两个独立的提交，其中第一个提交仅包含第一个特性，而第二个提交仅包含第二个特性。或者，假设您在调试代码时添加了很多打印语句，然后您仅仅希望提交和修复 bug 相关的代码而丢弃所有的打印语句。
@@ -1591,77 +1626,86 @@ Git 中还包括一个和数据模型完全不相关的概念，但它确是创�
 Git 处理这些场景的方法是使用一种叫做 “暂存区（staging area）”的机制，它允许您指定下次快照中要包括那些改动。
 
 Git 的命令行接口
-为了避免重复信息，我们将不会详细解释以下命令行。强烈推荐您阅读 Pro Git 中文版或可以观看本讲座的视频来学习。
+为了避免重复信息，我们将不会详细解释以下命令行。强烈推荐您阅读 [Pro Git 中文版](https://git-scm.com/book/zh/v2)或可以观看本讲座的视频来学习。
 
-基础
-git help <command>: 获取 git 命令的帮助信息
-git init: 创建一个新的 git 仓库，其数据会存放在一个名为 .git 的目录下
-git status: 显示当前的仓库状态
-git add <filename>: 添加文件到暂存区
-git commit: 创建一个新的提交
-如何编写 良好的提交信息!
-为何要 编写良好的提交信息
-git log: 显示历史日志
-git log --all --graph --decorate: 可视化历史记录（有向无环图）
-git diff <filename>: 显示与暂存区文件的差异
-git diff <revision> <filename>: 显示某个文件两个版本之间的差异
-git checkout <revision>: 更新 HEAD 和目前的分支
-分支和合并
-git branch: 显示分支
-git branch <name>: 创建分支
-git checkout -b <name>: 创建分支并切换到该分支
-相当于 git branch <name>; git checkout <name>
-git merge <revision>: 合并到当前分支
-git mergetool: 使用工具来处理合并冲突
-git rebase: 将一系列补丁变基（rebase）为新的基线
-远端操作
-git remote: 列出远端
-git remote add <name> <url>: 添加一个远端
-git push <remote> <local branch>:<remote branch>: 将对象传送至远端并更新远端引用
-git branch --set-upstream-to=<remote>/<remote branch>: 创建本地和远端分支的关联关系
-git fetch: 从远端获取对象/索引
-git pull: 相当于 git fetch; git merge
-git clone: 从远端下载仓库
-撤销
-git commit --amend: 编辑提交的内容或信息
-git reset HEAD <file>: 恢复暂存的文件
-git checkout -- <file>: 丢弃修改
-git restore: git2.32版本后取代git reset 进行许多撤销操作
-Git 高级操作
-git config: Git 是一个 高度可定制的 工具
-git clone --depth=1: 浅克隆（shallow clone），不包括完整的版本历史信息
-git add -p: 交互式暂存
-git rebase -i: 交互式变基
-git blame: 查看最后修改某行的人
-git stash: 暂时移除工作目录下的修改内容
-git bisect: 通过二分查找搜索历史记录
-.gitignore: 指定 故意不追踪的文件
+#### 基础
+
+- `git help <command>`: 获取 git 命令的帮助信息
+- `git init`: 创建一个新的 git 仓库，其数据会存放在一个名为 .git 的目录下
+- `git status`: 显示当前的仓库状态
+- `git add` <filename>: 添加文件到暂存区
+- `git commit`: 创建一个新的提交
+    - 如何编写[良好的提交信息](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)!
+    - 为何要[编写良好的提交信息](https://chris.beams.io/posts/git-commit/)
+- `git log`: 显示历史日志
+- `git log --all --graph --decorate`: 可视化历史记录（有向无环图）
+- `git diff` <filename>: 显示与暂存区文件的差异
+- `git diff` <revision> <filename>: 显示某个文件两个版本之间的差异
+- `git checkout` <revision>: 更新 HEAD 和目前的分支
+
+#### 分支和合并
+- `git branch`: 显示分支
+- `git branch <name>`: 创建分支
+- `git checkout -b <name>`: 创建分支并切换到该分支
+    - 相当于 `git branch <name>; git checkout <name>`
+- `git merge <revision>`: 合并到当前分支
+- `git mergetool`: 使用工具来处理合并冲突
+- `git rebase`: 将一系列补丁变基（rebase）为新的基线
+
+#### 远端操作
+- `git remote`: 列出远端
+- `git remote add <name> <url>`: 添加一个远端
+- `git push <remote> <local branch>:<remote branch>`: 将对象传送至远端并更新远端引用
+- `git branch --set-upstream-to=<remote>/<remote branch>`: 创建本地和远端分支的关联关系
+- `git fetch`: 从远端获取对象/索引
+- `git pull`: 相当于 git fetch; git merge
+- `git clon`e: 从远端下载仓库
+
+#### 撤销
+- `git commit --amend`: 编辑提交的内容或信息
+- `git reset HEAD <file>`: 恢复暂存的文件
+- `git checkout -- <file>`: 丢弃修改
+- `git restore`: git2.32版本后取代git reset 进行许多撤销操作
+
+### Git 高级操作
+
+- `git config`: Git 是一个[高度可定制](https://git-scm.com/docs/git-config)的工具
+- `git clone --depth=1`: 浅克隆（shallow clone），不包括完整的版本历史信息
+- `git add -p`: 交互式暂存
+- `git rebase -i`: 交互式变基
+- `git blame`: 查看最后修改某行的人
+- `git stash`: 暂时移除工作目录下的修改内容
+- `git bisect`: 通过二分查找搜索历史记录
+- `.gitignore`: [指定](https://git-scm.com/docs/gitignore)故意不追踪的文件
+
 ### 杂项
-图形用户界面: Git 的 图形用户界面客户端 有很多，但是我们自己并不使用这些图形用户界面的客户端，我们选择使用命令行接口
-Shell 集成: 将 Git 状态集成到您的 shell 中会非常方便。(zsh, bash)。Oh My Zsh这样的框架中一般以及集成了这一功能
-编辑器集成: 和上面一条类似，将 Git 集成到编辑器中好处多多。fugitive.vim 是 Vim 中集成 GIt 的常用插件
-工作流: 我们已经讲解了数据模型与一些基础命令，但还没讨论到进行大型项目时的一些惯例 ( 有很多 不同的 处理方法)
-GitHub: Git 并不等同于 GitHub。 在 GitHub 中您需要使用一个被称作拉取请求（pull request）的方法来向其他项目贡献代码
-其他 Git 提供商: GitHub 并不是唯一的。还有像 GitLab 和 BitBucket 这样的平台。
-资源
-Pro Git ，强烈推荐！学习前五章的内容可以教会您流畅使用 Git 的绝大多数技巧，因为您已经理解了 Git 的数据模型。后面的章节提供了很多有趣的高级主题。（Pro Git 中文版）；
-Oh Shit, Git!?! ，简短的介绍了如何从 Git 错误中恢复；
-Git for Computer Scientists ，简短的介绍了 Git 的数据模型，与本文相比包含较少量的伪代码以及大量的精美图片；
-Git from the Bottom Up详细的介绍了 Git 的实现细节，而不仅仅局限于数据模型。好奇的同学可以看看；
-How to explain git in simple words；
-Learn Git Branching 通过基于浏览器的游戏来学习 Git ；
+- **图形用户界面**: Git 的[图形用户界面客户端](https://git-scm.com/downloads/guis)有很多，但是我们自己并不使用这些图形用户界面的客户端，我们选择使用命令行接口
+- **Shell 集成**: 将 Git 状态集成到您的 shell 中会非常方便。([zsh](https://github.com/olivierverdier/zsh-git-prompt), [bash](https://github.com/magicmonty/bash-git-prompt))。[Oh My Zsh](https://github.com/ohmyzsh/ohmyzsh)这样的框架中一般以及集成了这一功能
+- **编辑器集成**: 和上面一条类似，将 Git 集成到编辑器中好处多多。[fugitive.vim](https://github.com/tpope/vim-fugitive)是 Vim 中集成 GIt 的常用插件
+- **工作流**: 我们已经讲解了数据模型与一些基础命令，但还没讨论到进行大型项目时的一些惯例 ( 有[很多](https://nvie.com/posts/a-successful-git-branching-model/) [不同的](https://www.endoflineblog.com/gitflow-considered-harmful) [处理方法](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow))
+- **GitHub**: Git 并不等同于 GitHub。 在 GitHub 中您需要使用一个被称作[拉取请求（pull request）](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests)的方法来向其他项目贡献代码
+- **其他 Git 提供商**: GitHub 并不是唯一的。还有像[GitLab](https://about.gitlab.com/)和[BitBucket](https://bitbucket.org/)这样的平台。
+
+### 资源
+- [Pro Git](https://git-scm.com/book/en/v2) ，**强烈推荐**！学习前五章的内容可以教会您流畅使用 Git 的绝大多数技巧，因为您已经理解了 Git 的数据模型。后面的章节提供了很多有趣的高级主题。（[Pro Git 中文版](https://git-scm.com/book/zh/v2)）；
+- [Oh Shit, Git!?!](https://ohshitgit.com/) ，简短的介绍了如何从 Git 错误中恢复；
+- [Git for Computer Scientists](https://eagain.net/articles/git-for-computer-scientists/) ，简短的介绍了 Git 的数据模型，与本文相比包含较少量的伪代码以及大量的精美图片；
+- [Git from the Bottom Up](https://jwiegley.github.io/git-from-the-bottom-up/)详细的介绍了 Git 的实现细节，而不仅仅局限于数据模型。好奇的同学可以看看；
+- [How to explain git in simple words](https://smusamashah.github.io/blog/2017/10/14/explain-git-in-simple-words)；
+- [Learn Git Branching](https://learngitbranching.js.org/) 通过基于浏览器的游戏来学习 Git ；
+
 ### 课后练习
 
-如果您之前从来没有用过 Git，推荐您阅读 Pro Git 的前几章，或者完成像 Learn Git Branching这样的教程。重点关注 Git 命令和数据模型相关内容；
-Fork 本课程网站的仓库
-将版本历史可视化并进行探索
-是谁最后修改了 README.md文件？（提示：使用 git log 命令并添加合适的参数）
-最后一次修改_config.yml 文件中 collections: 行时的提交信息是什么？（提示：使用 git blame 和 git show）
-使用 Git 时的一个常见错误是提交本不应该由 Git 管理的大文件，或是将含有敏感信息的文件提交给 Git 。尝试向仓库中添加一个文件并添加提交信息，然后将其从历史中删除 ( 这篇文章也许会有帮助)；
-从 GitHub 上克隆某个仓库，修改一些文件。当您使用 git stash 会发生什么？当您执行 git log --all --oneline 时会显示什么？通过 git stash pop 命令来撤销 git stash 操作，什么时候会用到这一技巧？
-与其他的命令行工具一样，Git 也提供了一个名为 ~/.gitconfig 配置文件 (或 dotfile)。请在 ~/.gitconfig 中创建一个别名，使您在运行 git graph 时，您可以得到 git log --all --graph --decorate --oneline 的输出结果；
-您可以通过执行 git config --global core.excludesfile ~/.gitignore_global 在 ~/.gitignore_global 中创建全局忽略规则。配置您的全局 gitignore 文件来自动忽略系统或编辑器的临时文件，例如 .DS_Store；
-克隆 本课程网站的仓库，找找有没有错别字或其他可以改进的地方，在 GitHub 上发起拉取请求（Pull Request）；
+- 如果您之前从来没有用过 Git，推荐您阅读 Pro Git 的前几章，或者完成像 Learn Git Branching这样的教程。重点关注 Git 命令和数据模型相关内容；
+- Fork 本课程网站的仓库
+    - 将版本历史可视化并进行探索
+    - 是谁最后修改了 README.md文件？（提示：使用 git log 命令并添加合适的参数）
+    - 最后一次修改_config.yml 文件中 collections: 行时的提交信息是什么？（提示：使用 git blame 和 git show）
+- 使用 Git 时的一个常见错误是提交本不应该由 Git 管理的大文件，或是将含有敏感信息的文件提交给 Git 。尝试向仓库中添加一个文件并添加提交信息，然后将其从历史中删除 ( 这篇文章也许会有帮助)；
+- 从 GitHub 上克隆某个仓库，修改一些文件。当您使用 git stash 会发生什么？当您执行 git log --all --oneline 时会显示什么？通过 git stash pop 命令来撤销 git stash 操作，什么时候会用到这一技巧？
+- 与其他的命令行工具一样，Git 也提供了一个名为 ~/.gitconfig 配置文件 (或 dotfile)。请在 ~/.gitconfig 中创建一个别名，使您在运行 git graph 时，您可以得到 git log --all --graph --decorate --oneline 的输出结果；
+- 您可以通过执行 git config --global core.excludesfile ~/.gitignore_global 在 ~/.gitignore_global 中创建全局忽略规则。配置您的全局 gitignore 文件来自动忽略系统或编辑器的临时文件，例如 .DS_Store；
+- 克隆 本课程网站的仓库，找找有没有错别字或其他可以改进的地方，在 GitHub 上发起拉取请求（Pull Request）；
 
 
 
@@ -1671,8 +1715,8 @@ Fork 本课程网站的仓库
 
 让您的写法符合您的想法是非常困难的。在这节课中，我们会传授给您一些非常有用技术，帮您处理代码中的 bug 和程序性能问题。
 
-调试代码
-打印调试法与日志
+### 调试代码
+#### 打印调试法与日志
 “最有效的 debug 工具就是细致的分析，配合恰当位置的打印语句” — Brian Kernighan, Unix 新手入门。
 
 调试代码的第一种方法往往是在您发现问题的地方添加一些打印语句，然后不断重复此过程直到您获取了足够的信息并找到问题的根本原因。
@@ -1708,7 +1752,7 @@ for R in $(seq 0 20 255); do
     done
 done
 ```
-第三方日志系统
+#### 第三方日志系统
 如果您正在构建大型软件系统，您很可能会使用到一些依赖，有些依赖会作为程序单独运行。如 Web 服务器、数据库或消息代理都是此类常见的第三方依赖。
 
 和这些系统交互的时候，阅读它们的日志是非常必要的，因为仅靠客户端侧的错误信息可能并不足以定位问题。
@@ -1735,7 +1779,7 @@ journalctl --since "1m ago" | grep Hello
 
 如果您发现您需要对 journalctl 和 log show 的结果进行大量的过滤，那么此时可以考虑使用它们自带的选项对其结果先过滤一遍再输出。还有一些像 lnav 这样的工具，它为日志文件提供了更好的展现和浏览方式。
 
-调试器
+#### 调试器
 当通过打印已经不能满足您的调试需求时，您应该使用调试器。
 
 调试器是一种可以允许我们和正在执行的程序进行交互的程序，它可以做到：
@@ -1774,7 +1818,7 @@ print(bubble_sort([4, 2, 1, 8, 7, 6]))
 
 它们都对类 C 语言的调试进行了优化，它允许您探索任意进程及其机器状态：寄存器、堆栈、程序计数器等。
 
-专门工具
+#### 专门工具
 即使您需要调试的程序是一个二进制的黑盒程序，仍然有一些工具可以帮助到您。当您的程序需要执行一些只有操作系统内核才能完成的操作时，它需要使用 系统调用。有一些命令可以帮助您追踪您的程序执行的系统调用。在 Linux 中可以使用strace ，在 macOS 和 BSD 中可以使用 dtrace。dtrace 用起来可能有些别扭，因为它使用的是它自有的 D 语言，但是我们可以使用一个叫做 dtruss 的封装使其具有和 strace (更多信息参考 这里)类似的接口
 
 下面的例子展现来如何使用 strace 或 dtruss 来显示ls 执行时，对stat 系统调用进行追踪对结果。若需要深入了解 strace，这篇文章 值得一读。
@@ -1794,7 +1838,7 @@ sudo dtruss -t lstat64_extended ls -l > /dev/null
 Javascript shell - 在 JS REPL中执行命令；
 网络 - 分析请求的时间线；
 存储 - 查看 Cookies 和本地应用存储。
-静态分析
+#### 静态分析
 有些问题是您不需要执行代码就能发现的。例如，仔细观察一段代码，您就能发现某个循环变量覆盖了某个已经存在的变量或函数名；或是有个变量在被读取之前并没有被定义。 这种情况下 静态分析 工具就可以帮我们找到问题。静态分析会将程序的源码作为输入然后基于编码规则对其进行分析并对代码的正确性进行推理。
 
 下面这段 Python 代码中存在几个问题。 首先，我们的循环变量foo 覆盖了之前定义的函数foo。最后一行，我们还把 bar 错写成了baz，因此当程序完成sleep (一分钟)后，执行到这一行的时候便会崩溃。
@@ -1836,7 +1880,7 @@ Found 3 errors in 1 file (checked 1 source file)
 ### 性能分析
 即使您的代码能够像您期望的一样运行，但是如果它消耗了您全部的 CPU 和内存，那么它显然也不是个好程序。算法课上我们通常会介绍大O标记法，但却没教给我们如何找到程序中的热点。 鉴于 过早的优化是万恶之源，您需要学习性能分析和监控工具，它们会帮助您找到程序中最耗时、最耗资源的部分，这样您就可以有针对性的进行性能优化。
 
-计时
+#### 计时
 和调试代码类似，大多数情况下我们只需要打印两处代码之间的时间即可发现问题。下面这个例子中，我们使用了 Python 的 time模块。
 ```python
 import time, random
@@ -1868,8 +1912,8 @@ real    0m2.561s
 user    0m0.015s
 sys     0m0.012s
 ```
-性能分析工具（profilers）
-CPU
+#### 性能分析工具（profilers）
+##### CPU
 大多数情况下，当人们提及性能分析工具的时候，通常指的是 CPU 性能分析工具。 CPU 性能分析工具有两种： 追踪分析器（tracing）及采样分析器（sampling）。 追踪分析器 会记录程序的每一次函数调用，而采样分析器则只会周期性的监测（通常为每毫秒）您的程序并记录程序堆栈。它们使用这些记录来生成统计信息，显示程序在哪些事情上花费了最多的时间。如果您希望了解更多相关信息，可以参考这篇 介绍性的文章。
 
 大多数的编程语言都有一些基于命令行的分析器，我们可以使用它们来分析代码。它们通常可以集成在 IDE 中，但是本节课我们会专注于这些命令行工具本身。
@@ -1955,7 +1999,7 @@ Line #  Hits         Time  Per Hit   % Time  Line Contents
 10        25        685.0     27.4      0.1      for url in s.find_all('a'):
 11        24         33.0      1.4      0.0          urls.append(url['href'])
 ```
-### 内存
+##### 内存
 像 C 或者 C++ 这样的语言，内存泄漏会导致您的程序在使用完内存后不去释放它。为了应对内存类的 Bug，我们可以使用类似 Valgrind 这样的工具来检查内存泄漏问题。
 
 对于 Python 这类具有垃圾回收机制的语言，内存分析器也是很有用的，因为对于某个对象来说，只要有指针还指向它，那它就不会被回收。
@@ -1981,7 +2025,7 @@ Line #    Mem usage  Increment   Line Contents
      7     13.61 MB -152.59 MB       del b
      8     13.61 MB    0.00 MB       return a
 ```
-### 事件分析
+##### 事件分析
 在我们使用strace调试代码的时候，您可能会希望忽略一些特殊的代码并希望在分析时将其当作黑盒处理。perf 命令将 CPU 的区别进行了抽象，它不会报告时间和内存的消耗，而是报告与您的程序相关的系统事件。
 
 例如，perf 可以报告不佳的缓存局部性（poor cache locality）、大量的页错误（page faults）或活锁（livelocks）。下面是关于常见命令的简介：
@@ -1990,18 +2034,18 @@ perf list - 列出可以被 pref 追踪的事件；
 perf stat COMMAND ARG1 ARG2 - 收集与某个进程或指令相关的事件；
 perf record COMMAND ARG1 ARG2 - 记录命令执行的采样信息并将统计数据储存在perf.data中；
 perf report - 格式化并打印 perf.data 中的数据。
-可视化
+##### 可视化
 使用分析器来分析真实的程序时，由于软件的复杂性，其输出结果中将包含大量的信息。人类是一种视觉动物，非常不善于阅读大量的文字。因此很多工具都提供了可视化分析器输出结果的功能。
 
 对于采样分析器来说，常见的显示 CPU 分析数据的形式是 火焰图，火焰图会在 Y 轴显示函数调用关系，并在 X 轴显示其耗时的比例。火焰图同时还是可交互的，您可以深入程序的某一具体部分，并查看其栈追踪（您可以尝试点击下面的图片）。
 
-### FlameGraph
+FlameGraph
 
 调用图和控制流图可以显示子程序之间的关系，它将函数作为节点并把函数调用作为边。将它们和分析器的信息（例如调用次数、耗时等）放在一起使用时，调用图会变得非常有用，它可以帮助我们分析程序的流程。 在 Python 中您可以使用 pycallgraph 来生成这些图片。
 
-### Call Graph
+Call Graph
 
-资源监控
+#### 资源监控
 有时候，分析程序性能的第一步是搞清楚它所消耗的资源。程序变慢通常是因为它所需要的资源不够了。例如，没有足够的内存或者网络连接变慢的时候。
 
 有很多很多的工具可以被用来显示不同的系统资源，例如 CPU 占用、内存使用、网络、磁盘使用等。
@@ -2015,7 +2059,7 @@ I/O 操作 - iotop 可以显示实时 I/O 占用信息而且可以非常方便�
 网络使用 - nethogs 和 iftop 是非常好的用于对网络占用进行监控的交互式命令行工具。
 如果您希望测试一下这些工具，您可以使用 stress 命令来为系统人为地增加负载。
 
-### 专用工具
+##### 专用工具
 有时候，您只需要对黑盒程序进行基准测试，并依此对软件选择进行评估。 类似 hyperfine 这样的命令行可以帮您快速进行基准测试。例如，我们在 shell 工具和脚本那一节课中我们推荐使用 fd 来代替 find。我们这里可以用hyperfine来比较一下它们。
 
 例如，下面的例子中，我们可以看到fd 比 find 要快20倍。
@@ -2370,21 +2414,25 @@ Cryptographic Right Answers: 解答了在一些应用环境下“应该使用什
 ## 主题十: 大杂烩
 
 ### 目录
-修改键位映射
-守护进程
-FUSE
-备份
-API（应用程序接口）
-常见命令行标志参数及模式
-窗口管理器
-VPN
-Markdown
-Hammerspoon (macOS桌面自动化)
-资源
-开机引导以及 Live USB
-Docker, Vagrant, VMs, Cloud, OpenStack
-交互式记事本编程
-GitHub
+
+<!-- code_chunk_output -->
+  - [修改键位映射](#修改键位映射)
+  - [守护进程](#守护进程)
+  - [FUSE](#fuse)
+  - [备份](#备份)
+  - [API（应用程序接口）](#api应用程序接口)
+  - [常见命令行标志参数及模式](#常见命令行标志参数及模式)
+  - [窗口管理器](#窗口管理器)
+  - [VPN](#vpn)
+  - [Markdown](#markdown)
+  - [Hammerspoon (macOS 桌面自动化)](#hammerspoon-macos-桌面自动化)
+    - [资源](#资源-2)
+  - [开机引导以及 Live USB](#开机引导以及-live-usb)
+  - [Docker, Vagrant, VMs, Cloud, OpenStack](#docker-vagrant-vms-cloud-openstack)
+  - [交互式记事本编程](#交互式记事本编程)
+  - [GitHub](#github)
+<!-- /code_chunk_output -->
+
 
 ### 修改键位映射
 作为一名程序员，键盘是你的主要输入工具。它像计算机里的其他部件一样是可配置的，而且值得你在这上面花时间。
@@ -2410,7 +2458,8 @@ macOS - karabiner-elements, skhd 或者 BetterTouchTool
 Linux - xmodmap 或者 Autokey
 Windows - 控制面板，AutoHotkey 或者 SharpKeys
 QMK - 如果你的键盘支持定制固件，QMK 可以直接在键盘的硬件上修改键位映射。保留在键盘里的映射免除了在别的机器上的重复配置。
-守护进程
+
+### 守护进程
 即便守护进程（daemon）这个词看上去有些陌生，你应该已经大约明白它的概念。大部分计算机都有一系列在后台保持运行，不需要用户手动运行或者交互的进程。这些进程就是守护进程。以守护进程运行的程序名一般以 d 结尾，比如 SSH 服务端 sshd，用来监听传入的 SSH 连接请求并对用户进行鉴权。
 
 Linux 中的 systemd（the system daemon）是最常用的配置和运行守护进程的方法。运行 systemctl status 命令可以看到正在运行的所有守护进程。这里面有很多可能你没有见过，但是掌管了系统的核心部分的进程：管理网络、DNS解析、显示系统的图形界面等等。用户使用 systemctl 命令和 systemd 交互来enable（启用）、disable（禁用）、start（启动）、stop（停止）、restart（重启）、或者status（检查）配置好的守护进程及系统服务。
@@ -2444,7 +2493,7 @@ WantedBy=multi-user.target
 ```
 如果你只是想定期运行一些程序，可以直接使用 cron。它是一个系统内置的，用来执行定期任务的守护进程。
 
-FUSE
+### FUSE
 现在的软件系统一般由很多模块化的组件构建而成。你使用的操作系统可以通过一系列共同的方式使用不同的文件系统上的相似功能。比如当你使用 touch 命令创建文件的时候，touch 使用系统调用（system call）向内核发出请求。内核再根据文件系统，调用特有的方法来创建文件。这里的问题是，UNIX 文件系统在传统上是以内核模块的形式实现，导致只有内核可以进行文件系统相关的调用。
 
 FUSE（用户空间文件系统）允许运行在用户空间上的程序实现文件系统调用，并将这些调用与内核接口联系起来。在实践中，这意味着用户可以在文件系统调用中实现任意功能。
@@ -2458,7 +2507,8 @@ rclone：将 Dropbox、Google Drive、Amazon S3、或者 Google Cloud Storage �
 gocryptfs：覆盖在加密文件上的文件系统。文件以加密形式保存在磁盘里，但该文件系统挂载后用户可以直接从挂载点访问文件的明文
 kbfs：分布式端到端加密文件系统。在这个文件系统里有私密（private），共享（shared），以及公开（public）三种类型的文件夹
 borgbackup：方便用户浏览删除重复数据后的压缩加密备份
-备份
+
+### 备份
 任何没有备份的数据都可能在一个瞬间永远消失。复制数据很简单，但是可靠地备份数据很难。下面列举了一些关于备份的基础知识，以及一些常见做法容易掉进的陷阱。
 
 首先，复制存储在同一个磁盘上的数据不是备份，因为这个磁盘是一个单点故障（single point of failure）。这个磁盘一旦出现问题，所有的数据都可能丢失。放在家里的外置磁盘因为火灾、抢劫等原因可能会和源数据一起丢失，所以是一个弱备份。推荐的做法是将数据备份到不同的地点存储。
@@ -2482,7 +2532,7 @@ borgbackup：方便用户浏览删除重复数据后的压缩加密备份
 
 IFTTT 这个网站可以将很多 API 整合在一起，让某 API 发生的特定事件触发在其他 API 上执行的任务。IFTTT 的全称If This Then That 足以说明它的用法，比如在检测到用户的新推文后，自动发布在其他平台。但是你可以对它支持的 API 进行任意整合，所以试着来设置一下任何你需要的功能吧！
 
-常见命令行标志参数及模式
+### 常见命令行标志参数及模式
 命令行工具的用法千差万别，阅读 man 页面可以帮助你理解每种工具的用法。即便如此，下面我们将介绍一下命令行工具一些常见的共同功能。
 
 大部分工具支持 --help 或者类似的标志参数（flag）来显示它们的简略用法。
@@ -2498,14 +2548,15 @@ IFTTT 这个网站可以将很多 API 整合在一起，让某 API 发生的特�
 
 rm -- -r 会让 rm 将 -r 当作文件名；
 ssh machine --for-ssh -- foo --for-foo 的 -- 会让 ssh 知道 --for-foo 不是 ssh 的标志参数。
-窗口管理器
+
+### 窗口管理器
 大部分人适应了 Windows、macOS、以及 Ubuntu 默认的“拖拽”式窗口管理器。这些窗口管理器的窗口一般就堆在屏幕上，你可以拖拽改变窗口的位置、缩放窗口、以及让窗口堆叠在一起。这种堆叠式（floating/stacking）管理器只是窗口管理器中的一种。特别在 Linux 中，有很多种其他的管理器。
 
 平铺式（tiling）管理器就是一个常见的替代。顾名思义，平铺式管理器会把不同的窗口像贴瓷砖一样平铺在一起而不和其他窗口重叠。这和 tmux 管理终端窗口的方式类似。平铺式管理器按照写好的布局显示打开的窗口。如果只打开一个窗口，它会填满整个屏幕。新开一个窗口的时候，原来的窗口会缩小到比如三分之二或者三分之一的大小来腾出空间。打开更多的窗口会让已有的窗口进一步调整。
 
 就像 tmux 那样，平铺式管理器可以让你在完全不使用鼠标的情况下使用键盘切换、缩放、以及移动窗口。它们值得一试！
 
-VPN
+### VPN
 VPN 现在非常火，但我们不清楚这是不是因为一些好的理由。你应该了解 VPN 能提供的功能和它的限制。使用了 VPN 的你对于互联网而言，最好的情况下也就是换了一个网络供应商（ISP）。所有你发出的流量看上去来源于 VPN 供应商的网络而不是你的“真实”地址，而你实际接入的网络只能看到加密的流量。
 
 虽然这听上去非常诱人，但是你应该知道使用 VPN 只是把原本对网络供应商的信任放在了 VPN 供应商那里——网络供应商 能看到的，VPN 供应商 也都能看到。如果相比网络供应商你更信任 VPN 供应商，那当然很好。反之，则连接VPN的价值不明确。机场的不加密公共热点确实不可以信任，但是在家庭网络环境里，这个差异就没有那么明显。
@@ -2516,7 +2567,7 @@ VPN 现在非常火，但我们不清楚这是不是因为一些好的理由。�
 
 MIT 向有访问校内资源需求的成员开放自己运营的 VPN。如果你也想自己配置一个 VPN，可以了解一下 WireGuard 以及 Algo。
 
-Markdown
+### Markdown
 你在职业生涯中大概率会编写各种各样的文档。在很多情况下这些文档需要使用标记来增加可读性，比如：插入粗体或者斜体内容，增加页眉、超链接、以及代码片段。
 
 在不使用 Word 或者 LaTeX 等复杂工具的情况下，你可以考虑使用 Markdown 这个轻量化的标记语言（markup language）。你可能已经见过 Markdown 或者它的一个变种。很多环境都支持并使用 Markdown 的一些子功能。
@@ -2532,7 +2583,7 @@ Markdown 致力于将人们编写纯文本时的一些习惯标准化。比如�
 如果要添加超链接，将 需要显示 的文字用方括号包围，并在后面紧接着用圆括号包围链接：[显示文字](指向的链接)。
 Markdown 不仅容易上手，而且应用非常广泛。实际上本课程的课堂笔记和其他资料都是使用 Markdown 编写的。点击这个链接可以看到本页面的原始 Markdown 内容。
 
-Hammerspoon (macOS 桌面自动化)
+### Hammerspoon (macOS 桌面自动化)
 Hammerspoon 是面向 macOS 的一个桌面自动化框架。它允许用户编写和操作系统功能挂钩的 Lua 脚本，从而与键盘、鼠标、窗口、文件系统等交互。
 
 下面是 Hammerspoon 的一些示例应用：
@@ -2543,7 +2594,7 @@ Hammerspoon 是面向 macOS 的一个桌面自动化框架。它允许用户编�
 在你不小心拿了朋友的充电器时弹出警告
 从用户的角度，Hammerspoon 可以运行任意 Lua 代码，绑定菜单栏按钮、按键、或者事件。Hammerspoon 提供了一个全面的用于和系统交互的库，因此它能没有限制地实现任何功能。你可以从头编写自己的 Hammerspoon 配置，也可以结合别人公布的配置来满足自己的需求。
 
-### 资源
+#### 资源
 Getting Started with Hammerspoon：Hammerspoon 官方教程
 Sample configurations：Hammerspoon 官方示例配置
 Anish’s Hammerspoon config：Anish 的 Hammerspoon 配置
