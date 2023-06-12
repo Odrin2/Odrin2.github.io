@@ -1785,7 +1785,7 @@ release
 
 ### C++ 处理多个不同类型的返回
 用结构体
-### C++ 结构化绑定
+### C++17 结构化绑定
 
 结构化绑定是C++17以后的新特性，能让我们更好的处理多返回值问题。
 
@@ -1835,23 +1835,51 @@ int main()
 ```
 
 
-### 如何处理OPTIONAL数据
+### C++17 如何处理OPTIONAL数据
+OPTIANAL也是C++17的新特性，对有可能不存在的数据进行处理，例如你想读取一个文件但是不确定它是否存在。
+```cpp
+#include <optional>
+std::optional<type> function(param){statement; return type;}  //一个optional类型的函数
+auto result = function();
+```
+1: result.has_value()判断数据是否存在, 通过result.value()获取数据
+2: result.value_or(xxx)其中xxx作为默认值，如果存在数据返回数据，不存在返回xxx
+3:通过if (result)判断数据是否存在
 
 
-### 单一变量存放多类型数据
+### C++17 单一变量存放多类型数据
+VARIANT也是C++17的新特性,类似于union，type1与type2表示存储的数据类型。
+```cpp
+#include <variant>
+std::variant<type1, type2> data;
+data = type1(xxx)
+```
+读取：
+1: std::get<type>(data)
+2: auto *value = std::get_if(type)(&data)
+注：类型安全
 
-
-### 如何存储任意类型的数据
+### C++17 如何存储任意类型的数据
+any和variant是类似的，都可以存储任何类型，但是variant必须列出所有类型，any则不需要。这是绝大多情况下是variant更好的原因，因为类型安全。
+```cpp
+#include <any>
+```
 
 
 ### 如何让C++运行得更快
 
+1、为什么不能传引用？
+线程函数的参数按值移动或复制。如果引用参数需要传递给线程函数，它必须被包装（例如使用std :: ref或std :: cref）
+
+2、std::async为什么一定要返回值？
+如果没有返回值，那么在一次for循环之后，临时对象会被析构，而析构函数中需要等待线程结束，所以就和顺序执行一样，一个个的等下去
+如果将返回值赋值给外部变量，那么生存期就在for循环之外，那么对象不会被析构，也就不需要等待线程结束。
 
 ### 如何让C++字符串更快
-
+优化`std:string`
 
 ### C++ 可视化基准测试
-
+总结: cpp的计时器配合自制简易json配置写出类，将时间分析结果写入一个json文件，用chrome://tracing 这个工具进行可视化
 
 ### C++ 单例模式
 
@@ -1872,8 +1900,24 @@ int main()
 
 
 ### C++ 参数计算顺序
+请判断下列程序的结果：
+```cpp
+#include <iostream>
 
+void PrintSum(int a, int b)
+{
+	std::cout << a << "+" << b << "=" << (a + b) << std::endl;
+}
 
+int main()
+{
+	int value = 0;  //请在C++17及以后的标准运行，如果按照以前的标准并在release模式下，两个value可能会并行传入，结果是2+2=4
+	PrintSum(++value,++value); //C++17及以后，两个value++不会并行执行
+    //PrintSum(value++,value++); //如果这样会是0+0=0
+}
+```
+在MSVC的环境下结果为`2+1=3`，说明先传入了b，在传入了a，然而使用其他编译器，比如clang则会先传入a，在传入b，并且给出参数未排序的警告信息。
+对于参数计算的顺序，C++并没有提供规范去说明形参或者实参应该以什么顺序求值
 ### C++ 移动语义
 
 
