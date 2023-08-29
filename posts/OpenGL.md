@@ -2,7 +2,9 @@
 title: Learning OpenGL based on C++
 date: 2023-05-01 12:31:02
 categories: Computer Graphics
-tags: Learning
+tags: 
+ - Learning
+ - C++
 ---
 
 The Cherno的OpenGL系列教程
@@ -370,7 +372,7 @@ unsigned int indices[] = {
 unsigned int buffer;
 glGenBuffers(1,&buffer);
 glBindBuffer(GL_ARRAY_BUFFER,buffer);//绑定意味着使用
-glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float),positions,GL_STATIC_DRAW);
+glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float),positions,GL_STATIC_DRAW);
 
 glEnableVertexAttribArray(0);
 glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
@@ -454,6 +456,7 @@ void main()
 	color = u_Color;
 };
 ```
+主文件中
 使用统一变量，并写了一个闪动效果
 ```cpp
 unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
@@ -489,4 +492,26 @@ while (!glfwWindowShouldClose(window))
     glfwPollEvents();
 }
 ```
-##
+
+## 将前面的代码抽象成类
+前面的代码都是简单的流程化的任务实现演示，让我们将这些功能抽象成类，使我们的代码更加工业化。
+如图：
+![Class](Class.png)
+这些代码的实现效果
+![Result](Result.png)
+### OpenGL纹理
+
+我们尝试把一个PNG图片当做纹理加载出来（只是示例，游戏引擎中一般有自己的纹理文件格式）
+
+使用了stb_imgae.h
+
+### OpenGL中的数学
+我们要通过glm数学库解决4:3图标的问题
+
+### OpenGL 使用imGUI控件
+使用直接调控我们的显示对象
+
+### 代码
+——————
+
+
