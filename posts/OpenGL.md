@@ -509,6 +509,7 @@ while (!glfwWindowShouldClose(window))
 我们要通过glm数学库解决4:3图标的问题
 
 ### OpenGL 使用imGUI控件
+ImGUI:Dear ImGui is a bloat-free graphical user interface library for C++.
 使用直接调控我们的显示对象
 
 ### 代码
